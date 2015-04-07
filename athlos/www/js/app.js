@@ -63,6 +63,14 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         templateUrl: "templates/profile.html"
       }
     }
+  })
+  .state('app.ranking', {
+    url: "/ranking",
+    views: {
+      'menuContent': {
+        templateUrl: "templates/ranking.html"
+      }
+    }
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/dashboard');
