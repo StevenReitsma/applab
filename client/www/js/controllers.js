@@ -1,12 +1,23 @@
 angular.module('starter.controllers', [])
 
-.controller('AchievementsCtrl', function($scope) {
-  $scope.achievements = [
-    { title: 'Test', id: 1 },
-    { title: 'Test2', id: 2 },
-    { title: 'Test3', id: 3 },
-    { title: 'Test4', id: 4 },
-    { title: 'Test5', id: 5 },
-    { title: 'Test6', id: 6 }
-  ];
+.controller('AchievementsCtrl', function($scope, Login, Achievement) {
+	// Set loading
+	$scope.achievements = [{"name": "Loading..."}];
+
+	var login = new Login({"email": "steven@properchaos.nl", "password": "test"});
+	login.$save().catch(function(response) {
+		// Error
+		$scope.error = true;
+		alert("Wrong username or password.");
+		alert(JSON.stringify(response));
+	}).then(function() {
+		if (!$scope.error)
+		{
+			var tokenId = login.id;
+			// We are now logged in, get achievements
+			$scope.achievements = Achievement.query();
+		}
+	});
+
+
 })
