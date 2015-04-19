@@ -21,3 +21,40 @@ angular.module('starter.controllers', [])
 
 
 })
+
+.controller('StartupRouterCtrl', function($scope, $state) {
+	function isValidToken(token)
+	{
+		// TODO
+		return true;
+	};
+
+	// If we are logged in, and our token is valid, jump to dashboard
+	if (window.localStorage['loggedin'] && isValidToken(window.localStorage['token']))
+	{
+		$state.go('app.dashboard');
+	}
+	// Else, jump to login screen
+	else
+	{
+		$state.go('login');
+	}
+})
+
+.controller('LoginCtrl', function($scope, $state, Login) {
+	$scope.login = function(user) {
+		// Do login
+		var login = new Login(user);
+		login.$save().then(function() {
+			// Set local storage
+			window.localStorage['loggedin'] = true;
+			window.localStorage['token'] = login.id;
+			
+			// We are now logged in, go to dashboard
+			$state.go('app.dashboard');
+		}, function(error) {
+			// Error
+			$scope.errorMessage = "Wrong username or password";
+		});
+	};
+});

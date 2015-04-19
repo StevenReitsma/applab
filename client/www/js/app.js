@@ -23,12 +23,20 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
 
+  .state('startupRouter', {
+    url: "/",
+    controller: 'StartupRouterCtrl'
+  })
   .state('app', {
     url: "/app",
     abstract: true,
     templateUrl: "templates/menu.html"
   })
-
+  .state('login', {
+    url: "/login",
+    templateUrl: "templates/login.html",
+    controller: "LoginCtrl"
+  })
   .state('app.dashboard', {
     url: "/dashboard",
     views: {
@@ -73,5 +81,5 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
     }
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/dashboard');
+  $urlRouterProvider.otherwise('/');
 });

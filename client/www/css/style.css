@@ -1,1 +1,26 @@
 /* Empty. Add your own CSS if you like */
+.center {
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-moz-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	-o-transform: translateY(-50%);
+	transform: translateY(-50%);
+	position: absolute !important;
+	margin:0 auto;
+	width:100%;
+}
+
+html, body, h1, h2, h3, h4, h5, h6, .item, .item-divider, .button {
+	font-family: RobotoLight !important;
+}
+
+@font-face {
+	font-family: RobotoLight;
+	src: url(../fonts/Roboto-Light.ttf);
+}
+
+@font-face {
+	font-family: Roboto;
+	src: url(../fonts/Roboto-Regular.ttf);
+}
