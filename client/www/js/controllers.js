@@ -22,11 +22,11 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('StartupRouterCtrl', function($scope, $state) {
+.controller('StartupRouterCtrl', function($scope, $state, Token) {
 	function isValidToken(token)
 	{
-		// TODO
-		return true;
+		response = Token.get({"token": token});
+		return response.response;
 	};
 
 	// If we are logged in, and our token is valid, jump to dashboard
@@ -37,6 +37,10 @@ angular.module('starter.controllers', [])
 	// Else, jump to login screen
 	else
 	{
+		// Remove existing tokens
+		window.localStorage['loggedin'] = false;
+		window.localStorage['token'] = "";
+
 		$state.go('login');
 	}
 })
