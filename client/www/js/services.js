@@ -6,4 +6,8 @@ angular.module('starter.services', ['ngResource'])
 
 .factory('Achievement', function($resource, config) {
 	return $resource(config.backend + '/api/achievements');
+})
+
+.factory('Profile', function($resource, config) {
+	return $resource(config.backend + '/api/users/:id',{id:'@id'});
 });
