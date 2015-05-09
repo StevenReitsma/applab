@@ -23,7 +23,7 @@ angular.module('starter.controllers', [])
 })
 
 .controller('ProfileCtrl', function($scope, Profile) {
-	$scope.userProfile = Profile.query({id: 2});
+	$scope.userProfile = Profile.query({token:window.localStorage['token']});
 })
 
 

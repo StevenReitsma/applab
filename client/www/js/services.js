@@ -9,5 +9,5 @@ angular.module('starter.services', ['ngResource'])
 })
 
 .factory('Profile', function($resource, config) {
-	return $resource(config.backend + '/api/users/:id',{id:'@id'});
+	return $resource(config.backend + '/api/users/getProfileData?access_token=:token',{token:'@token'});
 });
