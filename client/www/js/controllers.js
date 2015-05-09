@@ -22,12 +22,6 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('ProfileCtrl', function($scope, Profile) {
-	$scope.userProfile = Profile.query({id: 2});
-})
-
-
-
 .controller('StartupRouterCtrl', function($scope, $state) {
 	function isValidToken(token)
 	{
