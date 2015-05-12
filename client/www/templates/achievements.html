@@ -1,9 +1,35 @@
 <ion-view view-title="Achievements">
   <ion-content>
-    <ion-list>
-      <ion-item ng-repeat="achievement in achievements">
-        {{achievement.name}}
-      </ion-item>
-    </ion-list>
+		<div class="list">
+		  <div class="item item-divider">
+		    Achieved
+		  </div>
+
+		  <ion-item class="item item-thumbnail-left" ng-repeat="a in achieved">
+		    <img src="img/achievements/{{a.id}}.jpg">
+		  	<h2>{{a.name}}</h2>
+		  	<p>{{a.description}}</p>
+		  </ion-item>
+
+		  <div class="item item-divider">
+		    In progress
+		  </div>
+
+		  <ion-item class="item item-thumbnail-left" ng-repeat="a in progress">
+		    <img src="img/achievements/{{a.id}}.jpg">
+		  	<h2>{{a.name}}</h2>
+		  	<p>{{a.description}}</p>
+		  </ion-item>
+
+		  <div class="item item-divider">
+		    To be completed
+		  </div>
+
+		  <ion-item class="item item-thumbnail-left" ng-repeat="a in other">
+		    <img src="img/achievements/{{a.id}}.jpg">
+		  	<h2>{{a.name}}</h2>
+		  	<p>{{a.description}}</p>
+		  </ion-item>
+		</div>
   </ion-content>
 </ion-view>
