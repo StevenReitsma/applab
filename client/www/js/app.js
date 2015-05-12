@@ -59,7 +59,8 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
       url: "/watchlist",
       views: {
         'menuContent': {
-          templateUrl: "templates/watchlist.html"
+          templateUrl: "templates/watchlist.html",
+          controller: 'WatchlistCtrl'
         }
       }
     })

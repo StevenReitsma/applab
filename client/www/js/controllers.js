@@ -1,9 +1,26 @@
 angular.module('starter.controllers', [])
 
-.controller('AchievementsCtrl', function($scope, Login, Achievement) {
+.controller('AchievementsCtrl', function($scope, Achievement, Watchlist) {
 	$scope.achieved = Achievement.query({achieved: true});
 	$scope.progress = Achievement.query({achieved: false, progress: true});
 	$scope.other = Achievement.query({achieved: false, progress: false});
+
+	$scope.addToWatchlist = function(id)
+	{
+		// Create new watchlist item
+		var item = new Watchlist({userId: window.localStorage['userid'], achievementId: id});
+		item.$save();
+	};
+
+	$scope.removeFromWatchlist = function(id)
+	{
+		var item = Watchlist.get({userId: window.localStorage['userid'], achievementId: id});
+		item.$delete();
+	};
+})
+
+.controller('WatchlistCtrl', function($scope, Watchlist) {
+	$scope.watchlist = Watchlist.query();
 })
 
 .controller('StartupRouterCtrl', function($scope, $state, Token) {
@@ -37,6 +54,7 @@ angular.module('starter.controllers', [])
 			// Set local storage
 			window.localStorage['loggedin'] = true;
 			window.localStorage['token'] = login.id;
+			window.localStorage['userid'] = login.userId;
 			
 			// We are now logged in, go to dashboard
 			$state.go('app.dashboard');
