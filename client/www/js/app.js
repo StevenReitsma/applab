@@ -57,6 +57,7 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
   })
     .state('app.watchlist', {
       url: "/watchlist",
+      cache: false,
       views: {
         'menuContent': {
           templateUrl: "templates/watchlist.html",

@@ -2,9 +2,9 @@
   <ion-content>
   	<div ng-switch on="watchlist.length">
   		<div ng-switch-when="0">
-  			<div style="text-align:center;padding-top:50%">
+  			<div style="text-align:center;padding-top:25%">
   				Your watchlist is empty.<br /><br />
-				<a class="button button-positive ion-plus" ng-href="#/app/achievements">
+				<a class="button button-positive ion-plus" ng-click="goToAchievements()">
 				  Add achievements
 				</a>
 			</div>
@@ -12,7 +12,12 @@
   		<div ng-switch-default>
 			<div class="list">
 			  <ion-item class="item item-thumbnail-left" ng-repeat="a in watchlist">
-			    <img src="img/achievements/{{a.id}}.jpg">
+			    <img src="img/achievements/{{a.aid}}.jpg">
+			    <div style="float:right; font-size:75%">
+			  		<button class="button button-small button-assertive ion-minus" ng-click="removeFromWatchlist('{{a.aid}}', {{$index}})">
+				  		Remove
+				  	</button>
+				</div>
 			  	<h2>{{a.name}}</h2>
 			  	<p>{{a.description}}</p>
 			  </ion-item>
