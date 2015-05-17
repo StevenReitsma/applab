@@ -16,6 +16,9 @@ from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 
+import numpy as np
+import operator
+
 def output_json(obj, code, headers=None):
     resp = make_response(dumps(obj), code)
     resp.headers.extend(headers or {})
@@ -126,7 +129,7 @@ class UserProfile(restful.Resource):
 		all_unlocked_achievements = []
 
 		for t in unlocked:
-			a = db.coll('achievements').find({'aid': t['aid']}, sort=[('name', db.ASCENDING)])
+			a = db.coll('achievements').find({'_id': ObjectId(t['aid'])}, sort=[('name', db.ASCENDING)])
 			points += a[0]['score']
 			count += 1
 			all_unlocked_achievements.append(a)
@@ -219,7 +222,31 @@ class Validate(restful.Resource):
 class Ranking(restful.Resource):
 	@require_appkey
 	def get(self):
-		return []
+		db = DB()
+		
+		result = db.coll('users').find()
+		user_scores = {}
+		achievement_count = {}
+
+		for user in result:
+			unlocked = db.coll('progress').find({'uid': user['_id'], 'unlocked': True})
+
+			score = 0
+			for u in unlocked:
+				a = db.coll('achievements').find({'_id': ObjectId(u['aid'])})
+				score += a[0]['score']
+			
+			user_scores[str(user['_id'])] = score
+			achievement_count[str(user['_id'])] = unlocked.count()
+
+		scores = sorted(user_scores.items(), key=operator.itemgetter(1), reverse=True)
+
+		ids = [s[0] for s in scores]
+		scores = [s[1] for s in scores]
+		
+		counts = [achievement_count[d] for d in ids]
+
+		return {'scores': scores, 'uids': ids, 'counts': counts}
 
 api.add_resource(AchievementsList, '/achievements/all')
 api.add_resource(AchievementsUnlocked, '/achievements/unlocked')
