@@ -1,36 +1,66 @@
 angular.module('starter.controllers', [])
 
-.controller('AchievementsCtrl', function($scope, Login, Achievement) {
-	// Set loading
-	$scope.achievements = [{"name": "Loading..."}];
+.controller('AchievementsCtrl', function($scope, AchievementAchieved, AchievementProgress, AchievementOther, Watchlist) {
+	$scope.achieved = AchievementAchieved.query();
+	$scope.progress = AchievementProgress.query();
+	$scope.other = AchievementOther.query();
 
-	var login = new Login({"email": "steven@properchaos.nl", "password": "test"});
-	login.$save().catch(function(response) {
-		// Error
-		$scope.error = true;
-		alert("Wrong username or password.");
-		alert(JSON.stringify(response));
-	}).then(function() {
-		if (!$scope.error)
+	$scope.addToWatchlist = function(id, index, source)
+	{
+		// Create new watchlist item
+		var item = new Watchlist({"aid": id});
+		item.$save();
+
+		if (source == 'progress')
 		{
-			var tokenId = login.id;
-			// We are now logged in, get achievements
-			$scope.achievements = Achievement.query();
+			$scope.progress[index].watchlisted = true
 		}
-	});
+		else if (source == 'other')
+		{
+			$scope.other[index].watchlisted = true
+		}
+	};
 
+	$scope.removeFromWatchlist = function(id, index, source)
+	{
+		Watchlist.delete({"aid": id})
 
+		if (source == 'progress')
+		{
+			$scope.progress[index].watchlisted = false
+		}
+		else if (source == 'other')
+		{
+			$scope.other[index].watchlisted = false
+		}
+	};
+})
+
+.controller('WatchlistCtrl', function($scope, $state, Watchlist) {
+	$scope.watchlist = Watchlist.query();
+
+	$scope.removeFromWatchlist = function(id, index)
+	{
+		Watchlist.delete({"aid": id})
+
+		$scope.watchlist.splice(index, 1);
+	};
+
+	$scope.goToAchievements = function()
+	{
+		$state.go('app.achievements')
+	}
 })
 
 .controller('StartupRouterCtrl', function($scope, $state, Token) {
-	function isValidToken(token)
+	function isValidToken()
 	{
-		response = Token.get({"token": token});
-		return response.response;
+		response = Token.get();
+		return response;
 	};
 
 	// If we are logged in, and our token is valid, jump to dashboard
-	if (window.localStorage['loggedin'] && isValidToken(window.localStorage['token']))
+	if (window.localStorage['loggedin'] && isValidToken())
 	{
 		$state.go('app.dashboard');
 	}
@@ -52,7 +82,7 @@ angular.module('starter.controllers', [])
 		login.$save().then(function() {
 			// Set local storage
 			window.localStorage['loggedin'] = true;
-			window.localStorage['token'] = login.id;
+			window.localStorage['token'] = login.token;
 			
 			// We are now logged in, go to dashboard
 			$state.go('app.dashboard');

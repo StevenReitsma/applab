@@ -1,4 +1,4 @@
 angular.module('starter.config', [])
 .constant('config', {
-  'backend': 'http://applab.serveftp.com:3000'
+  'backend': 'http://localhost:5000'
 });

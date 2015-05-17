@@ -1,9 +1,63 @@
 <ion-view view-title="Achievements">
   <ion-content>
-    <ion-list>
-      <ion-item ng-repeat="achievement in achievements">
-        {{achievement.name}}
-      </ion-item>
-    </ion-list>
+		<div class="list">
+		  <div class="item item-divider">
+		    Achieved
+		  </div>
+
+		  <ion-item class="item item-thumbnail-left" ng-repeat="a in achieved">
+		    <img src="img/achievements/{{a._id.$oid}}.jpg">
+		  	<h2>{{a.name}}</h2>
+		  	<p>{{a.description}}</p>
+		  </ion-item>
+
+		  <div class="item item-divider">
+		    In progress
+		  </div>
+
+		  <ion-item class="item item-thumbnail-left" ng-repeat="a in progress">
+		    <img src="img/achievements/{{a._id.$oid}}.jpg">
+		    <div style="float:right; font-size:75%">
+				<div ng-switch on="a.watchlisted">
+				  	<div ng-switch-when="true">
+				  		<button class="button button-small button-assertive ion-minus" ng-click="removeFromWatchlist('{{a._id.$oid}}', {{$index}}, 'progress')">
+				  			Watchlist
+				  		</button>
+					</div>
+					<div ng-switch-default>
+				  		<button class="button button-small button-dark ion-plus" ng-click="addToWatchlist('{{a._id.$oid}}', {{$index}}, 'progress')">
+				  			Watchlist
+				  		</button>
+					</div>
+				</div>
+			</div>
+		  	<h2>{{a.name}}</h2>
+		  	<p>{{a.description}}</p>
+		  </ion-item>
+
+		  <div class="item item-divider">
+		    To be completed
+		  </div>
+
+		  <ion-item class="item item-thumbnail-left" ng-repeat="a in other">
+		    <img src="img/achievements/{{a._id.$oid}}.jpg">
+		    <div style="float:right; font-size:75%">
+				<div ng-switch on="a.watchlisted">
+				  	<div ng-switch-when="true">
+				  		<button class="button button-small button-assertive ion-minus" ng-click="removeFromWatchlist('{{a._id.$oid}}', {{$index}}, 'other')">
+				  			Watchlist
+				  		</button>
+					</div>
+					<div ng-switch-default>
+				  		<button class="button button-small button-dark ion-plus" ng-click="addToWatchlist('{{a._id.$oid}}', {{$index}}, 'other')">
+				  			Watchlist
+				  		</button>
+					</div>
+				</div>
+		  	</div>
+		  	<h2>{{a.name}}</h2>
+		  	<p>{{a.description}}</p>
+		  </ion-item>
+		</div>
   </ion-content>
 </ion-view>
