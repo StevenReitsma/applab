@@ -78,7 +78,8 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
     url: "/ranking",
     views: {
       'menuContent': {
-        templateUrl: "templates/ranking.html"
+        templateUrl: "templates/ranking.html",
+		controller: 'RankingCtrl'
       }
     }
   });

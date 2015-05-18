@@ -22,4 +22,8 @@ angular.module('starter.services', ['ngResource'])
 
 .factory('Token', function($resource, config) {
 	return $resource(config.backend + '/validate?key=' + window.localStorage['token']);
+})
+
+.factory('Ranking', function($resource, config) {
+	return $resource(config.backend + '/ranking?key=' + window.localStorage['token']);
 });
