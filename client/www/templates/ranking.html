@@ -1,41 +1,11 @@
 <ion-view view-title="Ranking">
   <ion-content>
     <div class="list">
-    <a class="item item-thumbnail-left" href="#">
-      <img src="img/number_one.png">
-      <h2><b>1 </b>Robbert van der Gugten</h2>
-      <p>1337 points, 50 achievements</p>
-    </a>
-	<a class="item item-thumbnail-left" href="#">
-      <img src="img/number_two.png">
-      <h2><b>2 </b>Steven Reitsma</h2>
-      <p>1200 points, 45 achievements</p>
-    </a>
-	<a class="item item-thumbnail-left" href="#">
-      <img src="img/number_three.png">
-      <h2><b>3 </b>Inez Wijnands</h2>
-      <p>1100 points, 40 achievements</p>
-    </a>
-	<a class="item item-thumbnail-left" href="#">
-      <h2><b>4 </b>Vangelis Kostas</h2>
-      <p>1000 points, 35 achievements</p>
-    </a>
-	<a class="item item-thumbnail-left" href="#">
-      <h2><b>5 </b>Person5</h2>
-      <p>1 point, 1 achievement</p>
-    </a>
-	<a class="item item-thumbnail-left" href="#">
-      <h2><b>4 </b>Person6</h2>
-      <p>1 point, 1 achievement</p>
-    </a>
-	<a class="item item-thumbnail-left" href="#">
-      <h2><b>4 </b>Person7</h2>
-      <p>1 point, 1 achievement</p>
-    </a>
-	<a class="item item-thumbnail-left" href="#">
-      <h2><b>4 </b>Person8</h2>
-      <p>1 point, 1 achievement</p>
-    </a>
+	<a class="item item-thumbnail-left" ng-repeat="a in ranking">
+		<img src="img/number_{{$index}}.png" ng-if="$index < 3">
+		<h2><b>{{$index + 1}}</b> {{a.uid}}</h2>
+		<p> {{a.score}} points, {{a.counts}} achievements</p>
+	</a>
 	</div>
   </ion-content>
 </ion-view>
