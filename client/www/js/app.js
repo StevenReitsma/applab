@@ -82,6 +82,14 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
 		controller: 'RankingCtrl'
       }
     }
+  })
+    .state('app.friends', {
+    url: "/friends",
+    views: {
+      'menuContent': {
+        templateUrl: "templates/friends.html"
+      }
+    }
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/');
