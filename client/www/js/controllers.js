@@ -93,6 +93,26 @@ angular.module('starter.controllers', [])
 	};
 })
 
+.controller('ProfileCtrl', function($scope, UserProfile) {
+	$scope.profile = UserProfile.get();
+})
+
+.controller('FriendsCtrl', function($scope, $state,Friends,NonFriends) {
+	$scope.friends = Friends.query();
+	$scope.addfriends = function(){
+		$state.go('app.addfriends');
+	}
+	$scope.users = NonFriends.query()
+	$scope.addfriend = function(name){
+		var item = new Friends({"name":name})
+		item.$save();
+		$state.go('app.friends');
+	}
+	$scope.removefriend = function(names){
+		Friends.delete({"names":names})
+	}
+})
+
 .controller('RankingCtrl', function($scope, Ranking) {
 	$scope.ranking = Ranking.query();
 });

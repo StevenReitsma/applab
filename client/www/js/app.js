@@ -70,7 +70,9 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
     url: "/profile",
     views: {
       'menuContent': {
-        templateUrl: "templates/profile.html"
+        templateUrl: "templates/profile.html",
+		controller: 'ProfileCtrl'
+		
       }
     }
   })
@@ -87,7 +89,17 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
     url: "/friends",
     views: {
       'menuContent': {
-        templateUrl: "templates/friends.html"
+        templateUrl: "templates/friends.html",
+		controller: 'FriendsCtrl'
+      }
+    }
+  })
+    .state('app.addfriends', {
+    url: "friends/add",
+    views: {
+      'menuContent': {
+        templateUrl: "templates/addfriends.html",
+		controller: 'FriendsCtrl'
       }
     }
   });
