@@ -4,7 +4,7 @@
 		<a class="item item-icon-left item-button-right" ng-repeat="friend in friends">
 		<i class="ion-person"></i>
 		{{friend}}
-		<button class="button button-assertive" ng-click="removefriend('{{friend}}')">
+		<button class="button button-assertive" ng-click="removefriend('{{friend}}',{{$index}})">
 		<i class="icon ion-minus-round"></i>
 		</button>
 		</a>

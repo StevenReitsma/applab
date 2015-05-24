@@ -97,19 +97,26 @@ angular.module('starter.controllers', [])
 	$scope.profile = UserProfile.get();
 })
 
-.controller('FriendsCtrl', function($scope, $state,Friends,NonFriends) {
-	$scope.friends = Friends.query();
-	$scope.addfriends = function(){
-		$state.go('app.addfriends');
-	}
-	$scope.users = NonFriends.query()
+.controller('AddFriendCtrl', function($scope, $state,Friends,NonFriends){
 	$scope.addfriend = function(name){
 		var item = new Friends({"name":name})
 		item.$save();
 		$state.go('app.friends');
+		$scope.list = Friends.query()
+	
 	}
-	$scope.removefriend = function(names){
+	$scope.users = NonFriends.query()	
+})
+
+.controller('FriendsCtrl', function($scope, $state,Friends) {
+	$scope.friends = Friends.query();
+	$scope.addfriends = function(){
+		$state.go('app.addfriends');
+	}
+
+	$scope.removefriend = function(names,index){
 		Friends.delete({"names":names})
+		$scope.friends.splice(index, 1);
 	}
 })
 

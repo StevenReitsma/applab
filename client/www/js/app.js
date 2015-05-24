@@ -87,6 +87,7 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
   })
     .state('app.friends', {
     url: "/friends",
+	cache: false,
     views: {
       'menuContent': {
         templateUrl: "templates/friends.html",
@@ -96,10 +97,11 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
   })
     .state('app.addfriends', {
     url: "friends/add",
+	cache: false,
     views: {
       'menuContent': {
         templateUrl: "templates/addfriends.html",
-		controller: 'FriendsCtrl'
+		controller: 'AddFriendCtrl'
       }
     }
   });
