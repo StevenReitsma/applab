@@ -95,4 +95,14 @@ angular.module('starter.controllers', [])
 
 .controller('RankingCtrl', function($scope, Ranking) {
 	$scope.ranking = Ranking.query();
+})
+
+.controller('DashboardCtrl', function($scope, Dashboard) {
+	$scope.round_to_5 = function(x)
+	{
+		return Math.floor(5 * Math.round(x / 5))
+	};
+
+	var dash = Dashboard.get();
+	$scope.dash = dash
 });

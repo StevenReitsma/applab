@@ -26,4 +26,8 @@ angular.module('starter.services', ['ngResource'])
 
 .factory('Ranking', function($resource, config) {
 	return $resource(config.backend + '/ranking?key=' + window.localStorage['token']);
+})
+
+.factory('Dashboard', function($resource, config) {
+	return $resource(config.backend + '/dashboard?key=' + window.localStorage['token']);
 });
