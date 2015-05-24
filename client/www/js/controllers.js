@@ -91,4 +91,8 @@ angular.module('starter.controllers', [])
 			$scope.errorMessage = "Wrong username or password";
 		});
 	};
+})
+
+.controller('RankingCtrl', function($scope, Ranking) {
+	$scope.ranking = Ranking.query();
 });
