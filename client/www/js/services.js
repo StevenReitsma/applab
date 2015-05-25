@@ -20,8 +20,20 @@ angular.module('starter.services', ['ngResource'])
 	return $resource(config.backend + '/users/watchlist?key=' + window.localStorage['token']);
 })
 
+.factory('Friends', function($resource, config) {
+	return $resource(config.backend + '/users/friends?key=' + window.localStorage['token']);
+})
+
 .factory('Token', function($resource, config) {
 	return $resource(config.backend + '/validate?key=' + window.localStorage['token']);
+})
+
+.factory('UserProfile', function($resource, config) {
+	return $resource(config.backend + '/users/profile?key=' + window.localStorage['token']);
+})
+
+.factory('NonFriends', function($resource, config) {
+	return $resource(config.backend + '/nonfriends?key=' + window.localStorage['token']);
 })
 
 .factory('Ranking', function($resource, config) {

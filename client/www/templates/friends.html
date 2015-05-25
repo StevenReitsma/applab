@@ -1,0 +1,18 @@
+<ion-view view-title="Friends">
+  <ion-content>
+	<div class="list">	
+		<a class="item item-icon-left item-button-right" ng-repeat="friend in friends">
+		<i class="ion-person"></i>
+		{{friend}}
+		<button class="button button-assertive" ng-click="removefriend('{{friend}}',{{$index}})">
+		<i class="icon ion-minus-round"></i>
+		</button>
+		</a>
+	</div>
+	<div class="row">
+		<div class="col text-center">
+			<button class="button icon-left ion-plus button-positive" ng-click="addfriends()">Add friends</button>
+		</div>
+	</div>
+  </ion-content>
+</ion-view>

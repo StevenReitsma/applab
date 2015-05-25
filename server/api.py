@@ -163,7 +163,6 @@ class UserProfile(restful.Resource):
         result['member_for_days'] = (datetime.datetime.utcnow() - result['date']).days
         result['achievement_count'] = count
         del result['password']
-
         return result
 
 
@@ -326,6 +325,53 @@ class Dashboard(restful.Resource):
         response['pushups'] = 5
 
         return response
+class NonFriends(restful.Resource):
+    @require_appkey
+    def get(self):
+        db = DB()
+        key = request.args.get('key')
+        uid = query.current_uid(key)
+        friends = db.coll('users').find_one({'_id':uid})['friends']
+        users = db.coll('users').find()
+        list = []
+        for user in users:
+            if str(user['_id']) not in friends and user['_id'] != uid:
+                list.append(user['name'])
+        return list
+
+class Friends(restful.Resource):
+    @require_appkey
+    def get(self):
+        db = DB()
+        user = UserProfileDefault().get()
+        friends = []
+        for friend in user['friends']:
+            friends.append(UserProfile().getByUID(friend)['name'])
+        return friends
+
+    @require_appkey
+    def post(self):
+        db = DB()
+        key = request.args.get('key')
+        uid = query.current_uid(key)
+        name = request.json['name']
+        friends = db.coll('users').find_one({'_id':uid})['friends']
+        friend = db.coll('users').find_one({'name':name})['_id']
+        friends.append(str(friend))
+        db.coll('users').update({'_id':uid},{'$set': {"friends":friends}})
+        return request.json
+
+    @require_appkey
+    def delete(self):
+        db = DB()
+        key = request.args.get('key')
+        uid = query.current_uid(key)
+        name = request.args.get('names')
+        friendId = db.coll('users').find_one({'name':name})['_id']
+        friends = db.coll('users').find_one({'_id':uid})['friends']
+        friends.remove(str(friendId))
+        db.coll('users').update({'_id':uid},{'$set': {"friends":friends}})
+        return {}
 
 api.add_resource(AchievementsList, '/achievements/all')
 api.add_resource(AchievementsUnlocked, '/achievements/unlocked')
@@ -338,6 +384,9 @@ api.add_resource(Login, '/login')
 api.add_resource(Validate, '/validate')
 api.add_resource(Ranking, '/ranking')
 api.add_resource(Dashboard, '/dashboard')
+api.add_resource(Friends, '/users/friends')
+api.add_resource(NonFriends, '/nonfriends')
+
 
 if __name__ == "__main__":
     http_server = HTTPServer(WSGIContainer(app))

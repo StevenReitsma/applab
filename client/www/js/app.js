@@ -71,7 +71,9 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
     url: "/profile",
     views: {
       'menuContent': {
-        templateUrl: "templates/profile.html"
+        templateUrl: "templates/profile.html",
+		controller: 'ProfileCtrl'
+		
       }
     }
   })
@@ -81,6 +83,26 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
       'menuContent': {
         templateUrl: "templates/ranking.html",
 		controller: 'RankingCtrl'
+      }
+    }
+  })
+    .state('app.friends', {
+    url: "/friends",
+	cache: false,
+    views: {
+      'menuContent': {
+        templateUrl: "templates/friends.html",
+		controller: 'FriendsCtrl'
+      }
+    }
+  })
+    .state('app.addfriends', {
+    url: "friends/add",
+	cache: false,
+    views: {
+      'menuContent': {
+        templateUrl: "templates/addfriends.html",
+		controller: 'AddFriendCtrl'
       }
     }
   });
