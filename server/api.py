@@ -116,7 +116,6 @@ class AchievementsOther(restful.Resource):
 
         return result
 
-
 class UserProfile(restful.Resource):
     @require_appkey
     def get(self):
@@ -143,6 +142,17 @@ class UserProfile(restful.Resource):
             points += a[0]['score']
             count += 1
             all_unlocked_achievements.append(a)
+
+        # Add masteries to score
+        counters = db.coll('counters').find({'uid': uid})
+
+        for c in counters:
+            if c['name'] == 'running_total':
+                points += np.floor(c['value'] / 10.) * 10
+            elif c['name'] == 'cycling_total':
+                points += np.floor(c['value'] / 50.) * 10
+            elif c['name'] == 'pushups_total':
+                points += np.floor(c['value'] / 100.) * 10
 
         unlocked_achievements_by_rarity = sorted(all_unlocked_achievements, key=lambda a: a['score'], reverse=True)
 
@@ -250,6 +260,17 @@ class Ranking(restful.Resource):
                 a = db.coll('achievements').find({'_id': ObjectId(u['aid'])})
                 score += a[0]['score']
 
+            # Add masteries to score
+            counters = db.coll('counters').find({'uid': user['_id']})
+
+            for c in counters:
+                if c['name'] == 'running_total':
+                    score += np.floor(c['value'] / 10.) * 10
+                elif c['name'] == 'cycling_total':
+                    score += np.floor(c['value'] / 50.) * 10
+                elif c['name'] == 'pushups_total':
+                    score += np.floor(c['value'] / 100.) * 10
+
             user_scores[str(user['_id'])] = score
             achievement_count[str(user['_id'])] = unlocked.count()
 
@@ -264,6 +285,46 @@ class Ranking(restful.Resource):
         v = [dict(zip(keys, vals)) for vals in zip(*(d[k] for k in keys))]
         return v
 
+class Dashboard(restful.Resource):
+    @require_appkey
+    def get(self):
+        db = DB()
+
+        key = request.args.get('key')
+        uid = query.current_uid(key)
+
+        response = {}
+
+        recent = db.coll('progress').find({'uid': uid, 'unlocked': True}, sort=[('date', db.DESCENDING)]).limit(3)
+        counters = db.coll('counters').find({'uid': uid})
+
+        recent_achievements = []
+        for r in recent:
+            a = db.coll('achievements').find({'_id': ObjectId(r['aid'])})
+            recent_achievements.append(a[0])
+
+        # Initial values
+        response['running_level'] = 1
+        response['cycling_level'] = 1
+        response['pushups_level'] = 1
+
+        for c in counters:
+            if c['name'] == 'running_total':
+                response['running_level'] = np.ceil(c['value'] / 10.)
+            elif c['name'] == 'cycling_total':
+                response['cycling_level'] = np.ceil(c['value'] / 50.)
+            elif c['name'] == 'pushups_total':
+                response['pushups_level'] = np.ceil(c['value'] / 100.)
+
+        recommended = []
+
+        response['recent'] = recent_achievements
+        response['recommended'] = recommended
+        response['running'] = 25
+        response['cycling'] = 46
+        response['pushups'] = 5
+
+        return response
 class NonFriends(restful.Resource):
     @require_appkey
     def get(self):
@@ -322,8 +383,10 @@ api.add_resource(Watchlist, '/users/watchlist')
 api.add_resource(Login, '/login')
 api.add_resource(Validate, '/validate')
 api.add_resource(Ranking, '/ranking')
+api.add_resource(Dashboard, '/dashboard')
 api.add_resource(Friends, '/users/friends')
 api.add_resource(NonFriends, '/nonfriends')
+
 
 if __name__ == "__main__":
     http_server = HTTPServer(WSGIContainer(app))

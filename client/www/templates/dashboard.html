@@ -1,5 +1,68 @@
 <ion-view view-title="Dashboard">
-  <ion-content>
+	<ion-content class="padding">
+		<h1 align="center" class="title">Hi, Steven!</h1>
+		<br />
+		<h4 align="center" class="title">Progress towards next mastery level</h4>
+		<div style="display:table; padding-left: 27px; margin: 0 auto;">
+			<table>
+				<tr>
+					<td>
+						<div class="progress-radial progress-{{round_to_5(dash.running)}}">
+							<div class="overlay">{{dash.running}}%</div>
+						</div>
+					</td>
+					<td>
+						<div class="progress-radial progress-{{round_to_5(dash.cycling)}}">
+							<div class="overlay">{{dash.cycling}}%</div>
+						</div>
+					</td>
+					<td>
+						<div class="progress-radial progress-{{round_to_5(dash.pushups)}}">
+							<div class="overlay">{{dash.pushups}}%</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="padding-right:29px; text-align:center">
+						Running
+						<br />
+						Mastery Level {{dash.running_level}}
+					</td>
+					<td style="padding-right:29px; text-align:center">
+						Cycling
+						<br />
+						Mastery Level {{dash.cycling_level}}
+					</td>
+					<td style="padding-right:29px; text-align:center">
+						Push-ups
+						<br />
+						Mastery Level {{dash.pushups_level}}
+					</td>
+				</tr>
+			</table>
+		</div>
 
-  </ion-content>
+		<br /><br />
+		<h4 align="center" class="title">Recommended achievements</h4>
+		<div class="list">
+			<ion-item class="item item-thumbnail-left" ng-repeat="a in dash.recommended">
+				<img src="img/achievements/{{a._id.$oid}}.jpg">
+				<h2>{{a.name}}</h2>
+				<p>{{a.description}}</p>
+			</ion-item>
+		</div>
+
+
+		<div ng-if="dash.recent.length > 0">
+			<br /><br />
+			<h4 align="center" class="title">Recently achieved</h4>
+			<div class="list">
+				<ion-item class="item item-thumbnail-left" ng-repeat="a in dash.recent">
+					<img src="img/achievements/{{a._id.$oid}}.jpg">
+					<h2>{{a.name}}</h2>
+					<p>{{a.description}}</p>
+				</ion-item>
+			</div>
+		</div>
+	</ion-content>
 </ion-view>
