@@ -1,7 +1,7 @@
 <ion-view view-title="Friends">
   <ion-content>
 	<div class="list">	
-		<a class="item item-icon-left item-button-right" ng-repeat="friend in friends">
+		<a class="item item-icon-left item-button-right" ng-repeat="friend in friends" ng-click="goToFriend({{'friend'}})">
 		<i class="ion-person"></i>
 		{{friend}}
 		<button class="button button-assertive" ng-click="removefriend('{{friend}}',{{$index}})">

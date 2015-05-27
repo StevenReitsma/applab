@@ -95,6 +95,16 @@ angular.module('starter.controllers', [])
 
 .controller('ProfileCtrl', function($scope, UserProfile) {
 	$scope.profile = UserProfile.get();
+	$scope.trueProfile = function(){
+		return true
+	}
+})
+
+.controller('OtherProfileCtrl', function($scope, $stateParams, Friend){
+	$scope.profile = Friend.get({'name':$stateParams.name})
+	$scope.trueProfile = function(){
+		return false
+	}
 })
 
 .controller('AddFriendCtrl', function($scope, $state,Friends,NonFriends){
@@ -117,6 +127,10 @@ angular.module('starter.controllers', [])
 	$scope.removefriend = function(names,index){
 		Friends.delete({"names":names})
 		$scope.friends.splice(index, 1);
+	}
+	
+	$scope.goToFriend = function(name){
+		$state.go('app.friend', {'name':name})
 	}
 })
 

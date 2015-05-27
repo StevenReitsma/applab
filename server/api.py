@@ -116,11 +116,12 @@ class AchievementsOther(restful.Resource):
 
         return result
 
+
 class UserProfile(restful.Resource):
     @require_appkey
     def get(self):
         uid = request.json['uid']
-        return getByUID(uid)
+        return self.getByUID(uid)
 
     def getByUID(self, uid):
         db = DB()
@@ -154,8 +155,8 @@ class UserProfile(restful.Resource):
             elif c['name'] == 'pushups_total':
                 points += np.floor(c['value'] / 100.) * 10
 
-        unlocked_achievements_by_rarity = sorted(all_unlocked_achievements, key=lambda a: a['score'], reverse=True)
-
+        #unlocked_achievements_by_rarity = sorted(all_unlocked_achievements, key=lambda a: a['score'], reverse=True)
+        unlocked_achievements_by_rarity = []
         result['rare'] = list(islice(unlocked_achievements_by_rarity, 3))
         result['points'] = points
         result['level'] = 1  # TODO
@@ -339,6 +340,14 @@ class NonFriends(restful.Resource):
                 list.append(user['name'])
         return list
 
+class Friend(restful.Resource):
+    @require_appkey
+    def get(self):
+        db = DB()
+        name = request.args['name']
+        uid = db.coll('users').find_one({'name':name})['_id']
+        return UserProfile().getByUID(uid)
+
 class Friends(restful.Resource):
     @require_appkey
     def get(self):
@@ -385,6 +394,7 @@ api.add_resource(Validate, '/validate')
 api.add_resource(Ranking, '/ranking')
 api.add_resource(Dashboard, '/dashboard')
 api.add_resource(Friends, '/users/friends')
+api.add_resource(Friend, '/users/friends/friend')
 api.add_resource(NonFriends, '/nonfriends')
 
 

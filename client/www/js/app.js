@@ -105,6 +105,15 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
 		controller: 'AddFriendCtrl'
       }
     }
+  })
+    .state('app.friend', {
+    url: "/users/friends/:name",
+    views: {
+      'menuContent': {
+        templateUrl: "templates/profile.html",
+		controller: 'OtherProfileCtrl'
+      }
+    }
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/');
