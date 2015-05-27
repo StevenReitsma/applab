@@ -139,8 +139,8 @@ class UserProfile(restful.Resource):
         all_unlocked_achievements = []
 
         for t in unlocked:
-            a = db.coll('achievements').find({'_id': ObjectId(t['aid'])}, sort=[('name', db.ASCENDING)])
-            points += a[0]['score']
+            a = db.coll('achievements').find_one({'_id': ObjectId(t['aid'])}, sort=[('name', db.ASCENDING)])
+            points += a['score']
             count += 1
             all_unlocked_achievements.append(a)
 
@@ -155,8 +155,8 @@ class UserProfile(restful.Resource):
             elif c['name'] == 'pushups_total':
                 points += np.floor(c['value'] / 100.) * 10
 
-        #unlocked_achievements_by_rarity = sorted(all_unlocked_achievements, key=lambda a: a['score'], reverse=True)
-        unlocked_achievements_by_rarity = []
+        unlocked_achievements_by_rarity = sorted(all_unlocked_achievements, key=lambda b: b['score'], reverse=True)
+        #unlocked_achievements_by_rarity = []
         result['rare'] = list(islice(unlocked_achievements_by_rarity, 3))
         result['points'] = points
         result['level'] = 1  # TODO
