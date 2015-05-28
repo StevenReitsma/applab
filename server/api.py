@@ -395,6 +395,70 @@ class Friends(restful.Resource):
         db.coll('users').update({'_id':uid},{'$set': {"friends":friends}})
         return {}
 
+
+def updateCounters(count,uid,activity):
+    db = DB()
+    a = db.coll('counters').find_one({'uid':uid, 'name':activity+"_total"})
+    if a is not None:
+        db.coll('counters').update({'uid':uid, 'name':activity+"_total"},{'$set':{'value':a['value']+count}})
+    else:
+        db.coll('counters').insert({'uid':uid, 'name':activity+"_total",'value':count})
+
+
+
+class updateAchievements(restful.Resource):
+    #Need in arguments activity, speed, count
+    @require_appkey
+    def post(self):
+        db = DB()
+        key = request.args.get('key')
+        uid = query.current_uid(key)
+        activity = request.json['activity']
+        #speed = request.json['speed']
+        count = request.json['count']
+        updateCounters(count,uid,activity)
+        Progress = db.coll('progress').find({'uid':uid})
+        inProgress = []
+        for p in Progress:
+            inProgress.append(p['aid'])
+            if p['unlocked'] == False:
+                if p['name'] == "daily_" + activity and not p['updated_today']: #for daily activities
+                    if count > p['remaining']:
+                        if p['days_left'] == 1:
+                            db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'unlocked':True}})
+                        else:
+                            db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'days_left':p['days_left']-1,'updated_today':True}})
+                    else:
+                        db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'remaining':p['remaining']-count}})
+                else:
+                    a = db.coll('achievements').find_one({'_id':p['aid']})
+                    if a['requirements']['value'] < db.coll('counters').find_one({'uid':uid,'name':activity+"_total"})['value']:
+                        db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'unlocked':True}})
+
+
+        achievements = db.coll('achievements').find({'_id':{"$nin":inProgress}}) #achievements that are not in progress
+        for a in achievements:
+            requirements = a['requirements']
+            name = requirements['name']
+            if name == "daily_"+activity: #for daily activities
+                if count >= requirements['value']:
+                    if a['days_total'] == 1:
+                        db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':True})
+                    else:
+                        db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':False,'days_left':a['days_total']-1,'name':"daily_"+activity, 'remaining:' :requirements['value'],'updated_today':True})
+                else:   #for multiple entries in a day
+                    db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':False,'days_left':a['days_total'],'name':"daily_"+activity, 'remaining' :requirements['value']-count,'updated_today':False})
+
+            elif name==activity+"_total":  #for total activities
+                if count > requirements['value']:
+                    db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':True})
+                else:
+                    db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':False, 'name':activity + "_total"})
+
+
+
+
+
 api.add_resource(AchievementsList, '/achievements/all')
 api.add_resource(AchievementsUnlocked, '/achievements/unlocked')
 api.add_resource(AchievementsProgress, '/achievements/progress')
@@ -409,6 +473,7 @@ api.add_resource(Dashboard, '/dashboard')
 api.add_resource(Friends, '/users/friends')
 api.add_resource(Friend, '/users/friends/friend')
 api.add_resource(NonFriends, '/nonfriends')
+api.add_resource(updateAchievements, '/updateachievements')
 
 
 if __name__ == "__main__":

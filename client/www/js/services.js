@@ -44,6 +44,10 @@ angular.module('starter.services', ['ngResource'])
 	return $resource(config.backend + '/users/friends/friend?key=' + window.localStorage['token']);
 })
 
+.factory('UpdateAchievements', function($resource, config) {
+	return $resource(config.backend + '/updateachievements?key=' + window.localStorage['token']);
+})
+
 .factory('Dashboard', function($resource, config) {
 	return $resource(config.backend + '/dashboard?key=' + window.localStorage['token']);
 });
