@@ -447,7 +447,7 @@ class UpdateAchievements(restful.Resource):
             inProgress.append(p['aid'])
             if p['unlocked'] == False:
                 if p['name'] == "daily_" + activity and not p['updated_today']: #for daily activities
-                    if count > p['remaining']:
+                    if count >= p['remaining']:
                         if p['days_left'] == 1:
                             db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'unlocked':True}})
                         else:
@@ -474,7 +474,7 @@ class UpdateAchievements(restful.Resource):
                     db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':False,'days_left':a['days_total'],'name':"daily_"+activity, 'remaining': requirements['value']-count,'updated_today':False})
 
             elif name==activity+"_total":  #for total activities
-                if count > requirements['value']:
+                if count >= requirements['value']:
                     db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':True})
                 else:
                     db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':False, 'name':activity + "_total"})
