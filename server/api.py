@@ -354,7 +354,7 @@ class Dashboard(restful.Resource):
             elif c['name'] == 'pushups_total':
                 response['pushups_level'] = np.ceil(c['value'] / 100.)
 
-        recommended = []
+        recommended = AchievementRecommender(uid)
 
         response['recent'] = recent_achievements
         response['recommended'] = recommended
@@ -429,6 +429,37 @@ def updateCounters(count,uid,activity):
         db.coll('counters').insert({'uid':uid, 'name':activity+"_total",'value':count})
 
 
+def AchievementRecommender(uid):
+    db = DB()
+    progress = list(db.coll('progress').find({'uid':uid, 'unlocked':False}))
+    achievements = []
+    if len(progress) > 2:
+        ids = np.random.choice(progress,3,replace=False)#Select 3 random progress achievements
+        for id in ids:
+            achievements.append(db.coll('achievements').find_one({'_id':id['aid']})) #find the correct achievements
+    else:
+        progid = []
+        if progress != []:
+            for p in progress:
+                achievements.append(db.coll('achievements').find_one({'_id':p['aid']}))
+                progid.append(p['aid'])
+        completed = db.coll('progress').find({'unlocked':True})
+        for c in completed:
+            progid.append(c['aid'])
+        achiev = list(db.coll('achievements').find({'_id':{"$nin":progid}})) #achievements that are not already recommended
+        tempAchiev = []
+        for a in achiev:
+            if a['requirements']['value'] <= 5:
+                tempAchiev.append(a)
+        if len(tempAchiev) > 3-len(achievements): #check whether there are enough achievements in tempachiev
+            choice = np.random.choice(tempAchiev,(3-len(achievements)),replace=False)#random achievements that are easy to get
+        elif len(achiev) > 3-len(achievements): #check whether there are enough remaining achievements overall
+            choice = np.random.choice(achiev,(3-len(achievements)),replace=False)
+        else:
+            choice = achiev
+        achievements = np.append(achievements,choice)
+    return achievements
+
 
 class UpdateAchievements(restful.Resource):
     #Need in arguments activity, speed, count
@@ -446,14 +477,15 @@ class UpdateAchievements(restful.Resource):
         for p in Progress:
             inProgress.append(p['aid'])
             if p['unlocked'] == False:
-                if p['name'] == "daily_" + activity and not p['updated_today']: #for daily activities
-                    if count >= p['remaining']:
-                        if p['days_left'] == 1:
-                            db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'unlocked':True}})
+                if p['name'] == "daily_" + activity:#for daily activities
+                    if not p['updated_today']:
+                        if count >= p['remaining']:
+                            if p['days_left'] == 1:
+                                db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'unlocked':True}})
+                            else:
+                                db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'days_left':p['days_left']-1,'updated_today':True}})
                         else:
-                            db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'days_left':p['days_left']-1,'updated_today':True}})
-                    else:
-                        db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'remaining':p['remaining']-count}})
+                            db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'remaining':p['remaining']-count}})
                 else:
                     a = db.coll('achievements').find_one({'_id':p['aid']})
                     if a['requirements']['value'] < db.coll('counters').find_one({'uid':uid,'name':activity+"_total"})['value']:
@@ -478,8 +510,6 @@ class UpdateAchievements(restful.Resource):
                     db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':True})
                 else:
                     db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':False, 'name':activity + "_total"})
-
-
 
 
 
