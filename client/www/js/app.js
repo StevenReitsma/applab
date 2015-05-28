@@ -47,7 +47,16 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
     }
   })
 
-  .state('app.achievements', {
+  .state('app.achievements_other', {
+    url: "/achievements_other/:name",
+    views: {
+      'menuContent': {
+        templateUrl: "templates/achievements.html",
+        controller: 'AchievementsOtherCtrl'
+      }
+    }
+  })
+    .state('app.achievements', {
     url: "/achievements",
     views: {
       'menuContent': {

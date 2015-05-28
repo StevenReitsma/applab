@@ -16,6 +16,10 @@ angular.module('starter.services', ['ngResource'])
 	return $resource(config.backend + '/achievements/other?key=' + window.localStorage['token']);
 })
 
+.factory('AchievementOtherAchieved', function($resource, config) {
+	return $resource(config.backend + '/achievements/unlocked_other?key=' + window.localStorage['token']);
+})
+
 .factory('Watchlist', function($resource, config) {
 	return $resource(config.backend + '/users/watchlist?key=' + window.localStorage['token']);
 })

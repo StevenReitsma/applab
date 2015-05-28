@@ -34,6 +34,11 @@ angular.module('starter.controllers', [])
 			$scope.other[index].watchlisted = false
 		}
 	};
+
+})
+
+.controller('AchievementsOtherCtrl', function($scope, $stateParams, AchievementOtherAchieved) {
+	$scope.achieved = AchievementOtherAchieved.query({'name':$stateParams.name});
 })
 
 .controller('WatchlistCtrl', function($scope, $state, Watchlist) {
@@ -93,18 +98,28 @@ angular.module('starter.controllers', [])
 	};
 })
 
-.controller('ProfileCtrl', function($scope, UserProfile) {
+.controller('ProfileCtrl', function($scope, $state, UserProfile) {
 	$scope.profile = UserProfile.get();
 	$scope.trueProfile = function(){
-		return true
+		return true;
 	}
+
+	$scope.goToAchievements = function()
+	{
+		$state.go('app.achievements')
+	};
 })
 
-.controller('OtherProfileCtrl', function($scope, $stateParams, Friend){
+.controller('OtherProfileCtrl', function($scope, $state, $stateParams, Friend){
 	$scope.profile = Friend.get({'name':$stateParams.name})
 	$scope.trueProfile = function(){
-		return false
-	}
+		return false;
+	};
+
+	$scope.goToAchievements = function()
+	{
+		$state.go('app.achievements_other', {'name':$stateParams.name})
+	};
 })
 
 .controller('AddFriendCtrl', function($scope, $state,Friends,NonFriends){

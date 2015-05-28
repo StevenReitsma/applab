@@ -41,12 +41,18 @@ def get_level(points):
 def get_min_points_for_level(level):
     return np.ceil((level / 0.67)**2)
 
+def get_remainder(points):
+    cur_level = get_level(points)
+    total_for_next_level = get_min_points_for_level(cur_level+1)
+
+    return total_for_next_level - points
+
 def get_percent_next_level(points):
     cur_level = get_level(points)
     total_for_next_level = get_min_points_for_level(cur_level+1)
     to_go = total_for_next_level - points
 
-    return (to_go / total_for_next_level) * 100.
+    return round((1 - (to_go / total_for_next_level)) * 100.)
 
 
 @app.after_request
@@ -88,7 +94,24 @@ class AchievementsUnlocked(restful.Resource):
         result = []
 
         for t in unlocked:
-            a = db.coll('achievements').find({'aid': t['aid']}, sort=[('name', db.ASCENDING)])
+            a = db.coll('achievements').find({'_id': t['aid']}, sort=[('name', db.ASCENDING)])
+            result.append(a[0])
+
+        return result
+
+class AchievementsOtherUnlocked(restful.Resource):
+    @require_appkey
+    def get(self):
+        db = DB()
+        name = request.args['name']
+        uid = db.coll('users').find_one({'name':name})['_id']
+
+        unlocked = db.coll('progress').find({'uid': uid, 'unlocked': True})
+
+        result = []
+
+        for t in unlocked:
+            a = db.coll('achievements').find({'_id': t['aid']}, sort=[('name', db.ASCENDING)])
             result.append(a[0])
 
         return result
@@ -106,7 +129,7 @@ class AchievementsProgress(restful.Resource):
         result = []
 
         for t in unlocked:
-            a = db.coll('achievements').find({'aid': t['aid']}, sort=[('name', db.ASCENDING)])
+            a = db.coll('achievements').find({'_id': t['aid']}, sort=[('name', db.ASCENDING)])
             result.append(a[0])
 
         return result
@@ -152,7 +175,7 @@ class UserProfile(restful.Resource):
         all_unlocked_achievements = []
 
         for t in unlocked:
-            a = db.coll('achievements').find_one({'_id': ObjectId(t['aid'])}, sort=[('name', db.ASCENDING)])
+            a = db.coll('achievements').find_one({'_id': t['aid']}, sort=[('name', db.ASCENDING)])
             points += a['score']
             count += 1
             all_unlocked_achievements.append(a)
@@ -169,11 +192,12 @@ class UserProfile(restful.Resource):
                 points += np.floor(c['value'] / 100.) * 10
 
         unlocked_achievements_by_rarity = sorted(all_unlocked_achievements, key=lambda b: b['score'], reverse=True)
-        #unlocked_achievements_by_rarity = []
-        result['rare'] = list(islice(unlocked_achievements_by_rarity, 3))
+
+        result['rare'] = list(islice(unlocked_achievements_by_rarity, 2))
         result['points'] = points
         result['level'] = get_level(points)
         result['percent'] = get_percent_next_level(points)
+        result['remainder'] = get_remainder(points)
         result['member_for_days'] = (datetime.datetime.utcnow() - result['date']).days
         result['achievement_count'] = count
         del result['password']
@@ -406,7 +430,7 @@ def updateCounters(count,uid,activity):
 
 
 
-class updateAchievements(restful.Resource):
+class UpdateAchievements(restful.Resource):
     #Need in arguments activity, speed, count
     @require_appkey
     def post(self):
@@ -445,9 +469,9 @@ class updateAchievements(restful.Resource):
                     if a['days_total'] == 1:
                         db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':True})
                     else:
-                        db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':False,'days_left':a['days_total']-1,'name':"daily_"+activity, 'remaining:' :requirements['value'],'updated_today':True})
+                        db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':False,'days_left':a['days_total']-1,'name':"daily_"+activity, 'remaining': requirements['value'],'updated_today':True})
                 else:   #for multiple entries in a day
-                    db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':False,'days_left':a['days_total'],'name':"daily_"+activity, 'remaining' :requirements['value']-count,'updated_today':False})
+                    db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':False,'days_left':a['days_total'],'name':"daily_"+activity, 'remaining': requirements['value']-count,'updated_today':False})
 
             elif name==activity+"_total":  #for total activities
                 if count > requirements['value']:
@@ -461,6 +485,7 @@ class updateAchievements(restful.Resource):
 
 api.add_resource(AchievementsList, '/achievements/all')
 api.add_resource(AchievementsUnlocked, '/achievements/unlocked')
+api.add_resource(AchievementsOtherUnlocked, '/achievements/unlocked_other')
 api.add_resource(AchievementsProgress, '/achievements/progress')
 api.add_resource(AchievementsOther, '/achievements/other')
 api.add_resource(UserProfile, '/users/profile/<int:id>')
@@ -473,7 +498,7 @@ api.add_resource(Dashboard, '/dashboard')
 api.add_resource(Friends, '/users/friends')
 api.add_resource(Friend, '/users/friends/friend')
 api.add_resource(NonFriends, '/nonfriends')
-api.add_resource(updateAchievements, '/updateachievements')
+api.add_resource(UpdateAchievements, '/updateachievements')
 
 
 if __name__ == "__main__":

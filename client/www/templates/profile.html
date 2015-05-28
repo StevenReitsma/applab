@@ -2,42 +2,35 @@
 	<ion-content class="padding">
 		<h3>
 				<div class="button button-small button-calm" style="border: 0px; vertical-align:middle; margin-bottom:5px">
-					{{profile.level}}
+					Level {{profile.level}}
 				</div>
-				{{profile.email}}
+				{{profile.name}}
 		</h3>
-		<div class="button button-full button-balanced" style="border: 0px; background: -webkit-linear-gradient(left, #33CD5F 0%, #33CD5F 58%, #444 58%, #444 100%);">
-			128 points to level 19! (58%)
+		<div class="button button-full button-balanced" style="border: 0px; background: -webkit-linear-gradient(left, #33CD5F 0%, #33CD5F {{profile.percent}}%, #444 58%, #444 100%);">
+			{{profile.remainder}} points to level {{profile.level + 1}}! ({{profile.percent}}%)
 		</div>
-		<div class="card">
-		  <div class="item item-divider">
-		    <strong>Rarest achievements</strong>
-		  </div>
-		  <div class="item item-text-wrap" style="padding: 0px">
-			<div class="list">
-			    <li class="item item-thumbnail-left">
-			      <img ng-src="http://placehold.it/64x64" style="border: 1px solid #ddd; border-radius:5px;">
-			      <h2>Thumper</h2>
-			      <p>Perform 420 full push-ups within a minute.</p>
-			      <p style="font-size:75%">Achieved by 0.1% of all users</p>
-			    </li>
+	  	<div ng-switch on="profile.rare.length">
+	  		<div ng-switch-when="0">
+	  		</div>
+	  		<div ng-default>
+				  <div class="item item-divider">
+				    <strong>Rarest achievements</strong>
+				  </div>
+				  <div class="item item-text-wrap" style="padding: 0px">
+					<div class="list">
+					    <li class="item item-thumbnail-left" ng-repeat="a in profile.rare">
+						    <img src="img/achievements/{{a._id.$oid}}.jpg">
+						  	<h2>{{a.name}}</h2>
+						  	<p>{{a.description}}</p>
+					    </li>
+					</div>
+				  </div>
+				  <div class="item item-text-wrap" style="padding: 10px">
+				    <div style="text-align:right">
+						<button class="button button-positive" ng-click="goToAchievements()">View all achievements</button>
+					</div>
+				  </div>
 			</div>
-		  </div>
-		  <div class="item item-text-wrap" style="padding: 0px">
-			<div class="list">
-			    <li class="item item-thumbnail-left">
-			      <img ng-src="http://placehold.it/64x64" style="border: 1px solid #ddd; border-radius:5px;">
-			      <h2>Tour du Monde</h2>
-			      <p>Cycle 40.000 kilometers.</p>
-			      <p style="font-size:75%">Achieved by 0.2% of all users</p>
-			    </li>
-			</div>
-		  </div>
-		  <div class="item item-text-wrap" style="padding: 10px">
-		    <div style="text-align:right">
-				<button class="button button-positive">View all achievements</button>
-			</div>
-		  </div>
 		</div>
 
 		<div class="card">
@@ -49,14 +42,14 @@
 				Member for <strong>{{profile.member_for_days}}</strong> days
 			</li>
 			<li class="item">
-				<strong>{{profile.achievement_count}}</strong> achievements
+				<strong>{{profile.achievement_count}}</strong> {{profile.achievement_count == 1 ? 'achievement' : 'achievements'}}
 			</li>
 			<li class="item">
 				<strong>{{profile.points}}</strong> points
 			</li>
 		  </div>
 		</div>
-		<div class="card" ng-show ="trueProfile()">
+		<div class="card" ng-show="trueProfile()">
 			<div class="item item-divider">
 				<strong>Settings</strong>
 			</div>
