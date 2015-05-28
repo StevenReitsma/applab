@@ -35,6 +35,20 @@ api = restful.Api(app)
 api.representations = DEFAULT_REPRESENTATIONS
 
 
+def get_level(points):
+    return int(0.67 * np.sqrt(points))
+
+def get_min_points_for_level(level):
+    return np.ceil((level / 0.67)**2)
+
+def get_percent_next_level(points):
+    cur_level = get_level(points)
+    total_for_next_level = get_min_points_for_level(cur_level+1)
+    to_go = total_for_next_level - points
+
+    return (to_go / total_for_next_level) * 100.
+
+
 @app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', '*')
@@ -131,7 +145,6 @@ class UserProfile(restful.Resource):
             abort(404)
 
         result = users[0]
-        level = 1
         points = 0
         count = 0
 
@@ -159,8 +172,8 @@ class UserProfile(restful.Resource):
         #unlocked_achievements_by_rarity = []
         result['rare'] = list(islice(unlocked_achievements_by_rarity, 3))
         result['points'] = points
-        result['level'] = 1  # TODO
-        result['percent'] = 50  # TODO
+        result['level'] = get_level(points)
+        result['percent'] = get_percent_next_level(points)
         result['member_for_days'] = (datetime.datetime.utcnow() - result['date']).days
         result['achievement_count'] = count
         del result['password']
