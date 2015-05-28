@@ -86,6 +86,15 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
       }
     }
   })
+    .state('app.stopactivty', {
+    url: "/updateachievements",
+    views: {
+      'menuContent': {
+        templateUrl: "templates/stopactivity.html",
+		controller: 'UpdateAchievementsCtrl'
+      }
+    }
+  })
     .state('app.friends', {
     url: "/friends",
 	cache: false,

@@ -118,6 +118,13 @@ angular.module('starter.controllers', [])
 	$scope.users = NonFriends.query()	
 })
 
+.controller('UpdateAchievementsCtrl', function($scope, $state,UpdateAchievements) {
+	$scope.update = function(activity,speed,count){
+		var item = new UpdateAchievements({"activity":activity,"speed":speed,"count":count})
+		item.$save()
+	}
+})
+	
 .controller('FriendsCtrl', function($scope, $state,Friends) {
 	$scope.friends = Friends.query();
 	$scope.addfriends = function(){
