@@ -39,6 +39,8 @@ angular.module('starter.controllers', [])
 
 .controller('AchievementsOtherCtrl', function($scope, $stateParams, AchievementOtherAchieved) {
 	$scope.achieved = AchievementOtherAchieved.query({'name':$stateParams.name});
+	$scope.progress = []
+	$scope.other = []
 })
 
 .controller('WatchlistCtrl', function($scope, $state, Watchlist) {

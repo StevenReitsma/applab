@@ -9,10 +9,10 @@
 		<div class="button button-full button-balanced" style="border: 0px; background: -webkit-linear-gradient(left, #33CD5F 0%, #33CD5F {{profile.percent}}%, #444 58%, #444 100%);">
 			{{profile.remainder}} points to level {{profile.level + 1}}! ({{profile.percent}}%)
 		</div>
-	  	<div ng-switch on="profile.rare.length">
+	  	<div ng-switch="profile.rare.length">
 	  		<div ng-switch-when="0">
 	  		</div>
-	  		<div ng-default>
+	  		<div ng-switch-default>
 				  <div class="item item-divider">
 				    <strong>Rarest achievements</strong>
 				  </div>
