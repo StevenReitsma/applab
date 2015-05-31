@@ -1,0 +1,79 @@
+<ion-view view-title="Activity">
+	<ion-content class="padding">
+		<br />
+		<br />
+		<div ng-switch="active">
+			<div ng-switch-when="true">
+				<h1 align="center" class="title"><i class="icon ion-play balanced"></i> Tracking active</h1>
+				<h4 align="center" class="title">You are currently {{currentActivity}}</h4>
+
+				<br />
+
+				<h3 align="center" class="title">{{measurement}} so far</h3>
+
+				<br /><br />
+
+				<div style="text-align:center">
+					<button class="button button-positive">
+					  Stop tracking
+					</button>
+				</div>
+
+				<br />
+
+				<p align="center">
+				Tip: you can start and stop tracking as many times as you like! <br />
+				Everything counts towards your achievements.
+				</p>
+			</div>
+			<div ng-switch-default>
+				<h1 align="center" class="title"><i class="icon ion-pause assertive"></i> Tracking inactive</h1>
+
+				<br /><br />
+
+				<h3>Let's do some...</h3>
+
+				<div class="list">
+
+				  <label class="item item-radio">
+				    <input type="radio" name="activityType" ng-model="activityType" ng-value="'running'">
+				    <div class="item-content">
+				      Running
+				    </div>
+				    <i class="radio-icon ion-ios-checkmark"></i>
+				  </label>
+
+				  <label class="item item-radio">
+				    <input type="radio" name="activityType" ng-model="activityType" ng-value="'cycling'">
+				    <div class="item-content">
+				      Cycling
+				    </div>
+				    <i class="radio-icon ion-ios-checkmark"></i>
+				  </label>
+
+				  <label class="item item-radio">
+				    <input type="radio" name="activityType" ng-model="activityType" ng-value="'pushups'">
+				    <div class="item-content">
+				      Pushups
+				    </div>
+				    <i class="radio-icon ion-ios-checkmark"></i>
+				  </label>
+
+				</div>
+				
+				<div style="text-align:center">
+					<button class="button button-positive" ng-click="startActivity(activityType)">
+					  Start tracking
+					</button>
+				</div>
+
+				<br />
+
+				<p align="center">
+				Tip: you can start and stop tracking as many times as you like! <br />
+				Everything counts towards your achievements.
+				</p>
+			</div>
+		</div>
+	</ion-content>
+</ion-view>

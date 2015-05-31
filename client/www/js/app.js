@@ -81,8 +81,7 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
     views: {
       'menuContent': {
         templateUrl: "templates/profile.html",
-		controller: 'ProfileCtrl'
-		
+		    controller: 'ProfileCtrl'
       }
     }
   })
@@ -91,7 +90,7 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
     views: {
       'menuContent': {
         templateUrl: "templates/ranking.html",
-		controller: 'RankingCtrl'
+		    controller: 'RankingCtrl'
       }
     }
   })
@@ -100,7 +99,7 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
     views: {
       'menuContent': {
         templateUrl: "templates/stopactivity.html",
-		controller: 'UpdateAchievementsCtrl'
+		    controller: 'UpdateAchievementsCtrl'
       }
     }
   })
@@ -110,7 +109,7 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
     views: {
       'menuContent': {
         templateUrl: "templates/friends.html",
-		controller: 'FriendsCtrl'
+		    controller: 'FriendsCtrl'
       }
     }
   })
@@ -120,7 +119,7 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
     views: {
       'menuContent': {
         templateUrl: "templates/addfriends.html",
-		controller: 'AddFriendCtrl'
+		    controller: 'AddFriendCtrl'
       }
     }
   })
@@ -129,7 +128,16 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
     views: {
       'menuContent': {
         templateUrl: "templates/profile.html",
-		controller: 'OtherProfileCtrl'
+		    controller: 'OtherProfileCtrl'
+      }
+    }
+  })
+    .state('app.activity', {
+    url: "/activity",
+    views: {
+      'menuContent': {
+        templateUrl: "templates/activity.html",
+        controller: 'ActivityCtrl'
       }
     }
   });

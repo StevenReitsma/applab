@@ -170,4 +170,26 @@ angular.module('starter.controllers', [])
 
 	var dash = Dashboard.get();
 	$scope.dash = dash
+})
+
+.controller('ActivityCtrl', function($scope, Dashboard) {
+	$scope.active = false;
+	$scope.currentActivity = "cycling";
+	$scope.measurement = "12.8 km";
+	$scope.activityType = "running";
+
+	$scope.startActivity = function(activityType)
+	{
+		// Send message to server that we're currently doing an activity
+		
+
+		if (activityType == "running" || activityType == "cycling")
+		{
+			// Start distance tracking
+		}
+		else
+		{
+			// Start count tracking
+		}
+	};
 });
