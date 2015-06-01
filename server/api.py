@@ -147,7 +147,7 @@ class AchievementsOther(restful.Resource):
         result = []
 
         for a in all_achievements:
-            t = db.coll('unlocked').find({'aid': a['_id']})
+            t = db.coll('progress').find({'aid': a['_id'], 'uid': uid, 'unlocked': True})
             if t.count() < 1:
                 result.append(a)
 
