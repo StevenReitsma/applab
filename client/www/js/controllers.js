@@ -135,11 +135,22 @@ angular.module('starter.controllers', [])
 	$scope.users = NonFriends.query()	
 })
 
-.controller('UpdateAchievementsCtrl', function($scope, $state,UpdateAchievements) {
+.controller('UpdateAchievementsCtrl', function($scope, $state, $ionicPopup, UpdateAchievements) {
+	$scope.unlocked = 'hoi'
 	$scope.update = function(activity,speed,count){
 		var item = new UpdateAchievements({"activity":activity,"speed":speed,"count":count})
 		item.$save()
+		$scope.popup()
 	}
+	$scope.popup = function(achieved) {
+		console.log(achieved);
+		if (achieved != []){
+			var alertPopup = $ionicPopup.alert({
+				title: 'Achievement(s) unlocked!',
+				template: achieved
+			});
+		}
+	};
 })
 	
 .controller('FriendsCtrl', function($scope, $state,Friends) {
