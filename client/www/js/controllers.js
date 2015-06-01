@@ -136,18 +136,16 @@ angular.module('starter.controllers', [])
 })
 
 .controller('UpdateAchievementsCtrl', function($scope, $state, $ionicPopup, UpdateAchievements) {
-	$scope.unlocked = 'hoi'
 	$scope.update = function(activity,speed,count){
 		var item = new UpdateAchievements({"activity":activity,"speed":speed,"count":count})
-		item.$save()
-		$scope.popup()
+		item.$save($scope.popup)
 	}
-	$scope.popup = function(achieved) {
-		console.log(achieved);
-		if (achieved != []){
+	$scope.popup = function(achieved,headers) {
+		console.log(JSON.stringify(achieved));
+		for (i = 0;i < achieved.unlocked.length; i++){
 			var alertPopup = $ionicPopup.alert({
 				title: 'Achievement(s) unlocked!',
-				template: achieved
+				template: achieved.unlocked[i]
 			});
 		}
 	};
