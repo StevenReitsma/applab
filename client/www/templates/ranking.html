@@ -3,7 +3,7 @@
     <div class="list">
 	<a class="item item-thumbnail-left" ng-repeat="a in ranking">
 		<img src="img/number_{{$index}}.png" ng-if="$index < 3">
-		<h2><b>{{$index + 1}}</b> {{a.uid}}</h2>
+		<h2><b>{{$index + 1}}</b> {{a.names}}</h2>
 		<p> {{a.score}} points, {{a.counts}} achievements</p>
 	</a>
 	</div>

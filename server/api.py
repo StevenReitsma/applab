@@ -316,10 +316,10 @@ class Ranking(restful.Resource):
 
         ids = [s[0] for s in scores]
         scores = [s[1] for s in scores]
-
+        names = [db.coll('users').find_one({'_id':ObjectId(uid)})['name'] for uid in ids]
         counts = [achievement_count[d] for d in ids]
-        d = {"uid" : ids, "score": scores, "counts":counts}
-        keys = ["uid", "score","counts"]
+        d = {"uid" : ids, "score": scores, "counts":counts, "names": names}
+        keys = ["uid", "score","counts", "names"]
         v = [dict(zip(keys, vals)) for vals in zip(*(d[k] for k in keys))]
         return v
 
@@ -469,11 +469,12 @@ class UpdateAchievements(restful.Resource):
         key = request.args.get('key')
         uid = query.current_uid(key)
         activity = request.json['activity']
-        #speed = request.json['speed']
+        speed = request.json['speed']
         count = request.json['count']
         updateCounters(count,uid,activity)
         Progress = db.coll('progress').find({'uid':uid})
         inProgress = []
+        unlocked = []
         for p in Progress:
             inProgress.append(p['aid'])
             if p['unlocked'] == False:
@@ -482,6 +483,7 @@ class UpdateAchievements(restful.Resource):
                         if count >= p['remaining']:
                             if p['days_left'] == 1:
                                 db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'unlocked':True}})
+                                unlocked.append(db.coll('achievements').find_one({'_id':p['aid']})['name'])
                             else:
                                 db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'days_left':p['days_left']-1,'updated_today':True}})
                         else:
@@ -490,6 +492,7 @@ class UpdateAchievements(restful.Resource):
                     a = db.coll('achievements').find_one({'_id':p['aid']})
                     if a['requirements']['value'] < db.coll('counters').find_one({'uid':uid,'name':activity+"_total"})['value']:
                         db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'unlocked':True}})
+                        unlocked.append(a['name'])
 
 
         achievements = db.coll('achievements').find({'_id':{"$nin":inProgress}}) #achievements that are not in progress
@@ -500,6 +503,7 @@ class UpdateAchievements(restful.Resource):
                 if count >= requirements['value']:
                     if a['days_total'] == 1:
                         db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':True})
+                        unlocked.append(a['name'])
                     else:
                         db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':False,'days_left':a['days_total']-1,'name':"daily_"+activity, 'remaining': requirements['value'],'updated_today':True})
                 else:   #for multiple entries in a day
@@ -508,8 +512,15 @@ class UpdateAchievements(restful.Resource):
             elif name==activity+"_total":  #for total activities
                 if count >= requirements['value']:
                     db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':True})
+                    unlocked.append(a['name'])
                 else:
                     db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':False, 'name':activity + "_total"})
+            elif name=="speed_" + activity:
+                if count >= requirements['value'] and speed >= requirements['speed']:
+                    db.coll('progress').insert({'aid':a['_id'],'uid':uid,'unlocked':True})
+                    unlocked.append(a['name'])
+
+        return {"unlocked":unlocked}
 
 
 
