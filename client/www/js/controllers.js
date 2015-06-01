@@ -181,7 +181,7 @@ angular.module('starter.controllers', [])
 	$scope.startActivity = function(activityType)
 	{
 		// Send message to server that we're currently doing an activity
-		
+
 
 		if (activityType == "running" || activityType == "cycling")
 		{
@@ -191,5 +191,7 @@ angular.module('starter.controllers', [])
 		{
 			// Start count tracking
 		}
+
+		// Setup a timer that periodically sends data to server and 
 	};
 });
