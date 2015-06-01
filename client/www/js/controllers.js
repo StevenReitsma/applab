@@ -186,21 +186,68 @@ angular.module('starter.controllers', [])
 	$scope.currentActivity = "cycling";
 	$scope.measurement = "12.8 km";
 	$scope.activityType = "running";
+	$scope.count = 0;
 
 	$scope.startActivity = function(activityType)
 	{
-		// Send message to server that we're currently doing an activity
+		// Optional: Send message to server that we're currently doing an activity
 
 
 		if (activityType == "running" || activityType == "cycling")
 		{
+			// Prevent the app from going to background
+			try
+			{
+				cordova.plugins.backgroundMode.setDefaults({
+				    title:  'Athlos',
+				    ticker: '',
+				    text:   'Tracking active',
+				});
+				cordova.plugins.backgroundMode.enable();
+			}
+			catch(error)
+			{
+				// Error probably generated because this was run in a browser, in which `cordova` is not defined.
+			}
+			console.log("start");
 			// Start distance tracking
+			var watchID = navigator.geolocation.watchPosition($scope.newData, $scope.newError, { timeout:10000, enableHighAccuracy: true });
 		}
 		else
 		{
 			// Start count tracking
+			// ROBBERT'S ISSUE
 		}
+	};
 
-		// Setup a timer that periodically sends data to server and 
+	$scope.stopActivity = function()
+	{
+		cordova.plugins.backgroundMode.disable();
+	}
+
+	$scope.newData = function(data)
+	{
+		console.log("test");
+		// Use $scope.$apply to update immediately
+		$scope.$apply(function() {
+			$scope.count = $scope.count + 1;
+			$scope.latitude = data.coords.latitude;
+			$scope.longitude = data.coords.longitude;
+			$scope.accuracy = data.coords.accuracy;
+			$scope.timestamp = data.timestamp;
+		});
+	};
+
+	$scope.newError = function(error)
+	{
+		console.log(error.message);
+		// GPS off?
+		// Use $scope.$apply to update immediately
+		$scope.$apply(function() {
+			$scope.latitude = "?";
+			$scope.longitude = "?";
+			$scope.accuracy = "?";
+			$scope.timestamp = "?";
+		});
 	};
 });

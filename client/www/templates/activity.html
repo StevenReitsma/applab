@@ -4,27 +4,34 @@
 		<br />
 		<div ng-switch="active">
 			<div ng-switch-when="true">
-				<h1 align="center" class="title"><i class="icon ion-play balanced"></i> Tracking active</h1>
-				<h4 align="center" class="title">You are currently {{currentActivity}}</h4>
+				<div ng-if="currentActivity == 'running' || currentActivity == 'cycling'">
+					<h1 align="center" class="title"><i class="icon ion-play balanced"></i> Tracking active</h1>
+					<h4 align="center" class="title">You are currently {{currentActivity}}</h4>
 
-				<br />
+					<br />
 
-				<h3 align="center" class="title">{{measurement}} so far</h3>
+					<h3 align="center" class="title">{{measurement}} so far</h3>
 
-				<br /><br />
+					<br /><br />
 
-				<div style="text-align:center">
-					<button class="button button-positive">
-					  Stop tracking
-					</button>
+					<div style="text-align:center">
+						<button class="button button-positive">
+						  Stop tracking
+						</button>
+					</div>
+
+					<br />
+
+					<p align="center">
+					Tip: you can start and stop tracking as many times as you like! <br />
+					Everything counts towards your achievements.
+					</p>
 				</div>
-
-				<br />
-
-				<p align="center">
-				Tip: you can start and stop tracking as many times as you like! <br />
-				Everything counts towards your achievements.
-				</p>
+				<div ng-if="currentActivity == 'pushups'">
+					ROBBERT'S ISSUE
+					===============
+					BIG BUTTON FOR PUSHUPS HERE
+				</div>
 			</div>
 			<div ng-switch-default>
 				<h1 align="center" class="title"><i class="icon ion-pause assertive"></i> Tracking inactive</h1>
@@ -66,6 +73,8 @@
 					  Start tracking
 					</button>
 				</div>
+
+				{{count}}, {{latitude}}, {{longitude}}, {{accuracy}}, {{timestamp}}
 
 				<br />
 
