@@ -202,16 +202,6 @@ class UserProfile(restful.Resource):
         del result['password']
         return result
 
-    @require_appkey
-    def post(self):
-        db = DB()
-        key = request.args.get('key')
-        uid = query.current_uid(key)
-        anonymous = request.args.get('anon')
-        print anonymous
-        db.coll('users').update({'_id':uid},{'anonymous':anonymous})
-        return request.json
-
 
 class UserProfileDefault(restful.Resource):
     @require_appkey
@@ -219,6 +209,16 @@ class UserProfileDefault(restful.Resource):
         key = request.args.get('key')
         uid = query.current_uid(key)
         return UserProfile().getByUID(uid)
+
+    @require_appkey
+    def post(self):
+        db = DB()
+        key = request.args.get('key')
+        uid = query.current_uid(key)
+        anonymous = request.json['anonymous']
+        print anonymous
+        db.coll('users').update({'_id':uid},{"$set":{'anonymous':anonymous}})
+        return request.json
 
 
 class Watchlist(restful.Resource):
@@ -295,7 +295,7 @@ class Ranking(restful.Resource):
     def get(self):
         db = DB()
 
-        result = db.coll('users').find()
+        result = db.coll('users').find({'anonymous':False})
         user_scores = {}
         achievement_count = {}
 
@@ -379,7 +379,7 @@ class NonFriends(restful.Resource):
         key = request.args.get('key')
         uid = query.current_uid(key)
         friends = db.coll('users').find_one({'_id':uid})['friends']
-        users = db.coll('users').find()
+        users = db.coll('users').find({'anonymous':False})
         list = []
         for user in users:
             if str(user['_id']) not in friends and user['_id'] != uid:

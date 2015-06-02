@@ -88,6 +88,7 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
   })
   .state('app.ranking', {
     url: "/ranking",
+	cache: false,
     views: {
       'menuContent': {
         templateUrl: "templates/ranking.html",
