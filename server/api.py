@@ -498,7 +498,7 @@ class UpdateAchievements(restful.Resource):
                                 db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'days_left':p['days_left']-1,'updated_today':True}})
                         else:
                             db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'remaining':p['remaining']-count}})
-                else:
+                elif p['name']!= "no_activity":
                     a = db.coll('achievements').find_one({'_id':p['aid']})
                     if a['requirements']['value'] < db.coll('counters').find_one({'uid':uid,'name':activity+"_total"})['value']:
                         db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'unlocked':True}})
