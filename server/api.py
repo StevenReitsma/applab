@@ -29,7 +29,6 @@ def output_json(obj, code, headers=None):
 DEFAULT_REPRESENTATIONS = {'application/json': output_json}
 
 parser = reqparse.RequestParser()
-
 app = Flask(__name__)
 api = restful.Api(app)
 api.representations = DEFAULT_REPRESENTATIONS
@@ -202,6 +201,16 @@ class UserProfile(restful.Resource):
         result['achievement_count'] = count
         del result['password']
         return result
+
+    @require_appkey
+    def post(self):
+        db = DB()
+        key = request.args.get('key')
+        uid = query.current_uid(key)
+        anonymous = request.args.get('anon')
+        print anonymous
+        db.coll('users').update({'_id':uid},{'anonymous':anonymous})
+        return request.json
 
 
 class UserProfileDefault(restful.Resource):
@@ -475,6 +484,7 @@ class UpdateAchievements(restful.Resource):
         Progress = db.coll('progress').find({'uid':uid})
         inProgress = []
         unlocked = []
+        db.coll('users').update({'_id':uid},{"$set":{'activity_today':True}})
         for p in Progress:
             inProgress.append(p['aid'])
             if p['unlocked'] == False:

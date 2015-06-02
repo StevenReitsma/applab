@@ -105,7 +105,11 @@ angular.module('starter.controllers', [])
 	$scope.trueProfile = function(){
 		return true;
 	}
-
+	$scope.anonymous = function(anon){
+		var item = new UserProfile({"anonymous":anon})
+		item.$save();
+	}
+	
 	$scope.goToAchievements = function()
 	{
 		$state.go('app.achievements')
