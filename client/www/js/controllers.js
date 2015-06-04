@@ -67,7 +67,7 @@ angular.module('starter.controllers', [])
 	};
 
 	// If we are logged in, and our token is valid, jump to dashboard
-	if (window.localStorage['loggedin'] && isValidToken())
+	if (window.localStorage['loggedin'] === true && isValidToken() === true)
 	{
 		$state.go('app.dashboard');
 	}
