@@ -371,6 +371,10 @@ class Dashboard(restful.Resource):
         response['cycling'] = 46
         response['pushups'] = 5
 
+        username = db.coll('users').find_one({'_id': ObjectId(uid)})['name'].split()[0]
+
+        response['name'] = username
+
         return response
 class NonFriends(restful.Resource):
     @require_appkey
