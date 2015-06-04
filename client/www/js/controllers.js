@@ -204,11 +204,13 @@ angular.module('starter.controllers', [])
 		    * This callback will be executed every time a geolocation is recorded in the background.
 		    */
 		    var callbackFn = function(location) {
-		    	$scope.accuracy = "OK";
-		    	$scope.latitude = location.latitude;
-		    	$scope.longitude = location.longitude;
-		    	$scope.count += 1;
-		        //bgGeo.finish();
+		    	$scope.$apply(function() {
+			    	$scope.accuracy = "OK";
+			    	$scope.latitude = location.latitude;
+			    	$scope.longitude = location.longitude;
+			    	$scope.count += 1;
+			        //bgGeo.finish();
+		    	});
 		    };
 
 		    var failureFn = function(error) {
