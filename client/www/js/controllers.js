@@ -221,7 +221,7 @@ angular.module('starter.controllers', [])
 		    }
 		    // BackgroundGeoLocation is highly configurable.
 		    bgGeo.configure(callbackFn, failureFn, {
-		        url: 'http://', // <-- Android ONLY:  your server url to send locations to
+		        url: 'http://athlos.properchaos.nl:5000/geotest', // <-- Android ONLY:  your server url to send locations to
 		        params: {
 
 		        },
