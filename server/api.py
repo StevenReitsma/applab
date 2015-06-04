@@ -287,7 +287,7 @@ class Validate(restful.Resource):
     def get(self):
         key = request.args.get('key')
 
-        return query.api_key_valid(key)
+        return {'valid': query.api_key_valid(key)}
 
 
 class Ranking(restful.Resource):

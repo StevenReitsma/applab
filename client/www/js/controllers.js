@@ -60,26 +60,20 @@ angular.module('starter.controllers', [])
 })
 
 .controller('StartupRouterCtrl', function($scope, $state, Token) {
-	function isValidToken()
-	{
-		response = Token.get();
-		return response;
-	};
+	Token.get({}, function(response, headers) {
+		if (response.valid === true && window.localStorage['loggedin'])
+		{
+			$state.go('app.dashboard');
+		}
+		else
+		{
+			// Remove existing tokens
+			window.localStorage['loggedin'] = false;
+			window.localStorage['token'] = "";
 
-	// If we are logged in, and our token is valid, jump to dashboard
-	if (window.localStorage['loggedin'] === true && isValidToken() === true)
-	{
-		$state.go('app.dashboard');
-	}
-	// Else, jump to login screen
-	else
-	{
-		// Remove existing tokens
-		window.localStorage['loggedin'] = false;
-		window.localStorage['token'] = "";
-
-		$state.go('login');
-	}
+			$state.go('login');
+		}
+	});
 })
 
 .controller('LoginCtrl', function($scope, $state, Login) {
@@ -232,14 +226,31 @@ angular.module('starter.controllers', [])
 
 	$scope.newData = function(data)
 	{
+		calculateDifference = function(lat1, lon1, lat2, lon2)
+		{
+			var radlat1 = Math.PI * lat1/180
+			var radlat2 = Math.PI * lat2/180
+			var radlon1 = Math.PI * lon1/180
+			var radlon2 = Math.PI * lon2/180
+			var theta = lon1-lon2
+			var radtheta = Math.PI * theta/180
+			var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+			dist = Math.acos(dist)
+			dist = dist * 180/Math.PI
+			dist = dist * 60 * 1.1515
+			dist = dist * 1.609344
+			return dist
+		};
+
 		console.log("test");
 		// Use $scope.$apply to update immediately
 		$scope.$apply(function() {
 			$scope.count = $scope.count + 1;
-			$scope.latitude = data.coords.latitude;
-			$scope.longitude = data.coords.longitude;
 			$scope.accuracy = data.coords.accuracy;
 			$scope.timestamp = data.timestamp;
+			$scope.difference = calculateDifference(data.coords.latitude, data.coords.longitude, $scope.latitude, $scope.longitude)
+			$scope.latitude = data.coords.latitude;
+			$scope.longitude = data.coords.longitude;
 		});
 	};
 
