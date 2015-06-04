@@ -194,12 +194,27 @@ angular.module('starter.controllers', [])
 
 		if (activityType == "running" || activityType == "cycling")
 		{
+			// Setup web socket
+			var ws = new WebSocket('ws://localhost:8887/post');
+			ws.onmessage = function (evt) {
+				var data;
+				try
+				{
+					data = JSON.parse(evt.data);
+				}
+				catch (e)
+				{
+					$scope.accuracy = e
+				}
+				$scope.latitude = data
+				$scope.count += 1
+			};
+
 		    navigator.geolocation.getCurrentPosition(function(location) {
 		        console.log('OK');
 		    });
 
     		var bgGeo = window.plugins.backgroundGeoLocation;
-    		console.log(bgGeo);
 
 		    /**
 		    * This callback will be executed every time a geolocation is recorded in the background.
