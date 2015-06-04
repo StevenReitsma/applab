@@ -194,23 +194,52 @@ angular.module('starter.controllers', [])
 
 		if (activityType == "running" || activityType == "cycling")
 		{
-			// Prevent the app from going to background
-			try
-			{
-				cordova.plugins.backgroundMode.setDefaults({
-				    title:  'Athlos',
-				    ticker: '',
-				    text:   'Tracking active',
-				});
-				cordova.plugins.backgroundMode.enable();
-			}
-			catch(error)
-			{
-				// Error probably generated because this was run in a browser, in which `cordova` is not defined.
-			}
-			console.log("start");
-			// Start distance tracking
-			var watchID = navigator.geolocation.watchPosition($scope.newData, $scope.newError, { timeout:10000, enableHighAccuracy: true });
+		    navigator.geolocation.getCurrentPosition(function(location) {
+		        console.log('OK');
+		    });
+
+    		var bgGeo = window.plugins.backgroundGeoLocation;
+    		console.log(bgGeo);
+
+		    /**
+		    * This callback will be executed every time a geolocation is recorded in the background.
+		    */
+		    var callbackFn = function(location) {
+		    	$scope.latitude = location.latitude
+		    	$scope.longitude = location.longitude
+		    	$scope.count += 1
+
+		        console.log('[js] BackgroundGeoLocation callback:  ' + location.latitude + ',' + location.longitude);
+		        // Do your HTTP request here to POST location to your server.
+		        //
+		        //
+		        //bgGeo.finish();
+		    };
+
+		    var failureFn = function(error) {
+		        console.log('BackgroundGeoLocation error');
+		        $scope.accuracy = error
+		    }
+		    // BackgroundGeoLocation is highly configurable.
+		    bgGeo.configure(callbackFn, failureFn, {
+		        url: 'ws://localhost:8887/post', // <-- Android ONLY:  your server url to send locations to
+		        params: {
+
+		        },
+		        headers: {                                   // <-- Android ONLY:  Optional HTTP headers sent to your configured #url when persisting locations
+
+		        },
+		        desiredAccuracy: 10000,
+		        stationaryRadius: 20,
+		        distanceFilter: 30,
+		        notificationTitle: 'Athlos', // <-- android only, customize the title of the notification
+		        notificationText: 'Tracking active', // <-- android only, customize the text of the notification
+		        debug: true, // <-- enable this hear sounds for background-geolocation life-cycle.
+		        stopOnTerminate: false // <-- enable this to clear background location settings when the app terminates
+		    });
+
+		    // Turn ON the background-geolocation system.  The user will be tracked whenever they suspend the app.
+		    bgGeo.start();
 		}
 		else
 		{
@@ -242,7 +271,6 @@ angular.module('starter.controllers', [])
 			return dist
 		};
 
-		console.log("test");
 		// Use $scope.$apply to update immediately
 		$scope.$apply(function() {
 			$scope.count = $scope.count + 1;
