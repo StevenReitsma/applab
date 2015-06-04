@@ -106,6 +106,8 @@ public class LocationUpdateService extends Service implements LocationListener {
     private NotificationManager notificationManager;
     public static TelephonyManager telephonyManager = null;
 
+    private CallbackContext callback;
+
     @Override
     public IBinder onBind(Intent intent) {
         // TODO Auto-generated method stub
@@ -180,6 +182,7 @@ public class LocationUpdateService extends Service implements LocationListener {
             isDebugging = Boolean.parseBoolean(intent.getStringExtra("isDebugging"));
             notificationTitle = intent.getStringExtra("notificationTitle");
             notificationText = intent.getStringExtra("notificationText");
+            callback = intent.getSerializableExtra("callback");
 
             // Build a Notification required for running service in foreground.
             Intent main = new Intent(this, BackgroundGpsPlugin.class);
@@ -672,7 +675,7 @@ public class LocationUpdateService extends Service implements LocationListener {
             location.put("recorded_at", dao.dateToString(l.getRecordedAt()));
             params.put("location", location);
 
-            Toast.makeText(this, location.toString(), Toast.LENGTH_SHORT).show();
+            callback.success(location);
 
             Log.i(TAG, "location: " + location.toString());
 
