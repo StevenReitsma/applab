@@ -194,22 +194,6 @@ angular.module('starter.controllers', [])
 
 		if (activityType == "running" || activityType == "cycling")
 		{
-			// Setup web socket
-			var ws = new WebSocket('ws://localhost:8887/post');
-			ws.onmessage = function (evt) {
-				var data;
-				try
-				{
-					data = JSON.parse(evt.data);
-				}
-				catch (e)
-				{
-					$scope.accuracy = e
-				}
-				$scope.latitude = data
-				$scope.count += 1
-			};
-
 		    navigator.geolocation.getCurrentPosition(function(location) {
 		        console.log('OK');
 		    });
@@ -237,16 +221,16 @@ angular.module('starter.controllers', [])
 		    }
 		    // BackgroundGeoLocation is highly configurable.
 		    bgGeo.configure(callbackFn, failureFn, {
-		        url: 'ws://localhost:8887/post', // <-- Android ONLY:  your server url to send locations to
+		        url: 'http://', // <-- Android ONLY:  your server url to send locations to
 		        params: {
 
 		        },
 		        headers: {                                   // <-- Android ONLY:  Optional HTTP headers sent to your configured #url when persisting locations
 
 		        },
-		        desiredAccuracy: 10000,
-		        stationaryRadius: 20,
-		        distanceFilter: 30,
+		        desiredAccuracy: 0,
+		        stationaryRadius: 0,
+		        distanceFilter: 0,
 		        notificationTitle: 'Athlos', // <-- android only, customize the title of the notification
 		        notificationText: 'Tracking active', // <-- android only, customize the text of the notification
 		        debug: true, // <-- enable this hear sounds for background-geolocation life-cycle.
