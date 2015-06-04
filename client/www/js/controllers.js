@@ -207,16 +207,10 @@ angular.module('starter.controllers', [])
 		    	$scope.latitude = location.latitude
 		    	$scope.longitude = location.longitude
 		    	$scope.count += 1
-
-		        console.log('[js] BackgroundGeoLocation callback:  ' + location.latitude + ',' + location.longitude);
-		        // Do your HTTP request here to POST location to your server.
-		        //
-		        //
 		        //bgGeo.finish();
 		    };
 
 		    var failureFn = function(error) {
-		        console.log('BackgroundGeoLocation error');
 		        $scope.accuracy = error
 		    }
 		    // BackgroundGeoLocation is highly configurable.

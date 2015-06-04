@@ -41,9 +41,8 @@
     "org.transistorsoft.cordova.background-geolocation": {
         "source": {
             "type": "git",
-            "url": "https://github.com/christocracy/cordova-plugin-background-geolocation.git",
-            "subdir": ".",
-            "ref": "cordova-4.x"
+            "url": "https://github.com/AndroidGecko/cordova-plugin-background-geolocation",
+            "subdir": "."
         }
     },
     "org.apache.cordova.geolocation": {

@@ -762,7 +762,11 @@
  * Might be desirable in certain apps.
  */
 - (void)applicationWillTerminate:(UIApplication *)application {
-    
+    [locationManager stopMonitoringSignificantLocationChanges];
+    [locationManager stopUpdatingLocation];
+    if (stationaryRegion != nil) {
+        [locationManager stopMonitoringForRegion:stationaryRegion];
+    }
 }
 
 - (void)dealloc

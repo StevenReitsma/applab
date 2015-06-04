@@ -61,7 +61,7 @@
                             "count": 1
                         },
                         {
-                            "xml": "<service android:enabled=\"true\" android:name=\"com.tenforwardconsulting.cordova.bgloc.LocationUpdateService\" android:process=\":remote\" />",
+                            "xml": "<service android:name=\"com.tenforwardconsulting.cordova.bgloc.LocationUpdateService\" />",
                             "count": 1
                         }
                     ],
