@@ -209,11 +209,7 @@ class InsertClick(restful.Resource):
         uid = query.current_uid(key)
         page = request.json['page']
         details = request.json['details']
-        print page
-        if details != {}:
-            db.coll('clicks').insert({'uid':uid,'page':page,'date':datetime.datetime.utcnow(),'details':details})
-        else:
-            db.coll('clicks').insert({'uid':uid,'page':page,'date':datetime.datetime.utcnow()})
+        db.coll('clicks').insert({'uid':uid,'page':page,'date':datetime.datetime.utcnow(),'details':details})
         return request.json
 
 
