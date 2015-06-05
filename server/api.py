@@ -86,12 +86,10 @@ class AchievementsUnlocked(restful.Resource):
     def get(self):
         key = request.args.get('key')
         uid = query.current_uid(key)
-
         db = DB()
+
         unlocked = db.coll('progress').find({'uid': uid, 'unlocked': True})
-
         result = []
-
         for t in unlocked:
             a = db.coll('achievements').find({'_id': t['aid']}, sort=[('name', db.ASCENDING)])
             result.append(a[0])
@@ -201,6 +199,22 @@ class UserProfile(restful.Resource):
         result['achievement_count'] = count
         del result['password']
         return result
+
+
+class InsertClick(restful.Resource):
+    @require_appkey
+    def post(self):
+        db = DB()
+        key = request.args.get('key')
+        uid = query.current_uid(key)
+        page = request.json['page']
+        details = request.json['details']
+        print page
+        if details != {}:
+            db.coll('clicks').insert({'uid':uid,'page':page,'date':datetime.datetime.utcnow(),'details':details})
+        else:
+            db.coll('clicks').insert({'uid':uid,'page':page,'date':datetime.datetime.utcnow()})
+        return request.json
 
 
 class UserProfileDefault(restful.Resource):
@@ -507,6 +521,8 @@ class UpdateAchievements(restful.Resource):
                     if a['requirements']['value'] < db.coll('counters').find_one({'uid':uid,'name':activity+"_total"})['value']:
                         db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'unlocked':True}})
                         unlocked.append(a['name'])
+                else:
+                    db.coll('progress').remove({'aid':p['aid'],'uid':p['uid']})
 
 
         achievements = db.coll('achievements').find({'_id':{"$nin":inProgress}}) #achievements that are not in progress
@@ -537,7 +553,7 @@ class UpdateAchievements(restful.Resource):
         return {"unlocked":unlocked}
 
 
-
+api.add_resource(InsertClick, '/insertclick')
 api.add_resource(AchievementsList, '/achievements/all')
 api.add_resource(AchievementsUnlocked, '/achievements/unlocked')
 api.add_resource(AchievementsOtherUnlocked, '/achievements/unlocked_other')

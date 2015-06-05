@@ -44,6 +44,10 @@ angular.module('starter.services', ['ngResource'])
 	return $resource(config.backend + '/ranking?key=' + window.localStorage['token']);
 })
 
+.factory('InsertClick', function($resource, config) {
+	return $resource(config.backend + '/insertclick?key=' + window.localStorage['token']);
+})
+
 .factory('Friend', function($resource, config) {
 	return $resource(config.backend + '/users/friends/friend?key=' + window.localStorage['token']);
 })
