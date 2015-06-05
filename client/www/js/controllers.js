@@ -1,6 +1,9 @@
 angular.module('starter.controllers', [])
 
-.controller('AchievementsCtrl', function($scope, AchievementAchieved, AchievementProgress, AchievementOther, Watchlist) {
+.controller('AchievementsCtrl', function($scope, AchievementAchieved, AchievementProgress, AchievementOther, Watchlist, InsertClick) {
+	var click = new InsertClick({"page":"Achievements", "details":{}})
+	click.$save();
+
 	$scope.achieved = AchievementAchieved.query();
 	$scope.progress = AchievementProgress.query();
 	$scope.other = AchievementOther.query();
@@ -43,7 +46,11 @@ angular.module('starter.controllers', [])
 	$scope.other = []
 })
 
-.controller('WatchlistCtrl', function($scope, $state, Watchlist) {
+.controller('WatchlistCtrl', function($scope, $state, Watchlist, InsertClick) {
+	
+	var click = new InsertClick({"page":"Watchlist", "details":{}})
+	click.$save();
+
 	$scope.watchlist = Watchlist.query();
 
 	$scope.removeFromWatchlist = function(id, index)
@@ -114,7 +121,10 @@ angular.module('starter.controllers', [])
 	};
 })
 
-.controller('OtherProfileCtrl', function($scope, $state, $stateParams, Friend){
+.controller('OtherProfileCtrl', function($scope, $state, $stateParams, Friend, InsertClick){
+	var click = new InsertClick({"page":"Oherprofile", "details":{"friend":$stateParams.name}})
+	click.$save();
+
 	$scope.profile = Friend.get({'name':$stateParams.name})
 	$scope.trueProfile = function(){
 		return false;
@@ -126,7 +136,10 @@ angular.module('starter.controllers', [])
 	};
 })
 
-.controller('AddFriendCtrl', function($scope, $state,Friends,NonFriends){
+.controller('AddFriendCtrl', function($scope, $state,Friends,NonFriends, InsertClick){
+	var click = new InsertClick({"page":"AddFriend", "details":{}})
+	click.$save();
+
 	$scope.addfriend = function(name){
 		var item = new Friends({"name":name})
 		item.$save();
@@ -138,7 +151,10 @@ angular.module('starter.controllers', [])
 })
 
 	
-.controller('FriendsCtrl', function($scope, $state,Friends) {
+.controller('FriendsCtrl', function($scope, $state,Friends, InsertClick) {
+	var click = new InsertClick({"page":"Friends", "details":{}})
+	click.$save();
+
 	$scope.friends = Friends.query();
 	$scope.addfriends = function(){
 		$state.go('app.addfriends');
@@ -154,11 +170,17 @@ angular.module('starter.controllers', [])
 	}
 })
 
-.controller('RankingCtrl', function($scope, Ranking) {
+.controller('RankingCtrl', function($scope, Ranking, InsertClick) {
+	var click = new InsertClick({"page":"Ranking", "details":{}})
+	click.$save();
+
 	$scope.ranking = Ranking.query();
 })
 
-.controller('DashboardCtrl', function($scope, Dashboard) {
+.controller('DashboardCtrl', function($scope, Dashboard, InsertClick) {
+	var click = new InsertClick({"page":"Dashboard", "details":{}})
+	click.$save();
+
 	$scope.round_to_5 = function(x)
 	{
 		return Math.floor(5 * Math.round(x / 5))
@@ -168,7 +190,7 @@ angular.module('starter.controllers', [])
 	$scope.dash = dash
 })
 
-.controller('ActivityCtrl', function($scope, $ionicPopup, Dashboard, UpdateAchievements) {
+.controller('ActivityCtrl', function($scope, $ionicPopup, Dashboard, UpdateAchievements, InsertClick) {
 	$scope.active = false;
 	$scope.currentActivity = "cycling";
 	$scope.measurement = "12.8 km";
@@ -246,6 +268,9 @@ angular.module('starter.controllers', [])
 	
 	$scope.stopActivity = function(activity)
 	{
+		var click = new InsertClick({"page":"Activity", "details":{"ActivityType":activity,"value":$scope.value}})
+		click.$save();
+
 		//cordova.plugins.backgroundMode.disable();
 		console.log($scope.value)
 		var item = new UpdateAchievements({"activity":activity,"speed":$scope.speed,"count":$scope.value})
