@@ -199,51 +199,77 @@ angular.module('starter.controllers', [])
 
 .controller('ActivityCtrl', function($scope, $ionicPopup, Dashboard, UpdateAchievements, InsertClick) {
 	$scope.active = false;
-	$scope.currentActivity = "cycling";
-	$scope.measurement = "12.8 km";
-	$scope.activityType = "running";
-	$scope.value = 0;
-	$scope.speed = 0;
-	$scope.count = 0;
+	$scope.currentActivity = "running";
+	$scope.measurement = 0;
 	var lastCall = 0;
+	var bgGeo;
+
+	var prevLat;
+	var prevLon;
+	var count = 0;
+	var startTime = 0;
 
 	$scope.startActivity = function(activityType)
 	{
-		// Optional: Send message to server that we're currently doing an activity
-
+		$scope.measurement = 0
 		$scope.active = true;
-		$scope.currentActivity = activityType
-		if (activityType == "running" || activityType == "cycling")
+		$scope.currentActivity = activityType;
+		startTime = Date.now();
+
+		console.log($scope.currentActivity);
+
+		if ($scope.currentActivity == "running" || $scope.currentActivity == "cycling")
 		{
+			// Active location plugins
 		    navigator.geolocation.getCurrentPosition(function(location) {
 		        console.log('OK');
 		    });
 
-    		var bgGeo = window.plugins.backgroundGeoLocation;
+    		bgGeo = window.plugins.backgroundGeoLocation;
 
 		    /**
 		    * This callback will be executed every time a geolocation is recorded in the background.
 		    */
 		    var callbackFn = function(location) {
-		    	$scope.$apply(function() {
-			    	$scope.accuracy = "OK";
-			    	$scope.latitude = location.latitude;
-			    	$scope.longitude = location.longitude;
-			    	$scope.count += 1;
-			        //bgGeo.finish();
-		    	});
+		    	// Add distance
+				calculateDifference = function(lat1, lon1, lat2, lon2)
+				{
+					var radlat1 = Math.PI * lat1/180
+					var radlat2 = Math.PI * lat2/180
+					var radlon1 = Math.PI * lon1/180
+					var radlon2 = Math.PI * lon2/180
+					var theta = lon1-lon2
+					var radtheta = Math.PI * theta/180
+					var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+					dist = Math.acos(dist)
+					dist = dist * 180/Math.PI
+					dist = dist * 60 * 1.1515
+					dist = dist * 1.609344
+					return dist
+				};
+
+				// Add distance to measurement
+				$scope.$apply(function ()
+				{
+					if (count > 0)
+						$scope.measurement += calculateDifference(prevLat, prevLon, location.latitude, location.longitude);
+				});
+
+				prevLat = location.latitude;
+				prevLon = location.longitude;
 		    };
 
 		    var failureFn = function(error) {
-		        $scope.accuracy = error
-		    }
+		        // Error
+		    };
+
 		    // BackgroundGeoLocation is highly configurable.
 		    bgGeo.configure(callbackFn, failureFn, {
-		        url: 'http://athlos.properchaos.nl:5000/geotest', // <-- Android ONLY:  your server url to send locations to
+		        url: 'http://athlos.properchaos.nl:5000/geotest',
 		        params: {
 
 		        },
-		        headers: {                                   // <-- Android ONLY:  Optional HTTP headers sent to your configured #url when persisting locations
+		        headers: {
 
 		        },
 		        desiredAccuracy: 0,
@@ -251,7 +277,7 @@ angular.module('starter.controllers', [])
 		        distanceFilter: 0,
 		        notificationTitle: 'Athlos', // <-- android only, customize the title of the notification
 		        notificationText: 'Tracking active', // <-- android only, customize the text of the notification
-		        debug: true, // <-- enable this hear sounds for background-geolocation life-cycle.
+		        debug: false, // <-- enable this hear sounds for background-geolocation life-cycle.
 		        stopOnTerminate: false // <-- enable this to clear background location settings when the app terminates
 		    });
 
@@ -261,15 +287,14 @@ angular.module('starter.controllers', [])
 		else
 		{
 			// Pushups
-
-			$scope.value = 0
 		}
 	};
-	$scope.increment = function(){
-		
+
+	$scope.increment = function()
+	{
 		var now = Date.now();
 		if (lastCall + 1000 < now){
-			$scope.value = $scope.value + 1;
+			$scope.measurement += 1;
 			lastCall = now;
 			$scope.warning = false;
 		}
@@ -280,67 +305,53 @@ angular.module('starter.controllers', [])
 		
 	};
 	
-	$scope.stopActivity = function(activity)
+	$scope.stopActivity = function()
 	{
-		var click = new InsertClick({"page":"Activity", "details":{"ActivityType":activity,"value":$scope.value}})
-		click.$save();
+		var online = true;
+		if (navigator.connection != null)
+		{
+			var networkState = navigator.connection.type;
 
-		//cordova.plugins.backgroundMode.disable();
-		console.log($scope.value)
-		var item = new UpdateAchievements({"activity":activity,"speed":$scope.speed,"count":$scope.value})
-		item.$save($scope.popup)
-		$scope.active = false
-		
+			if (networkState == Connection.None)
+				online = false;
+			else
+				online = true;
+		}
+
+		if (online === false)
+		{
+			// Internet offline, save for later.
+			$scope.internetGone = true;
+		}
+		else
+		{
+			$scope.internetGone = false;
+
+			var click = new InsertClick({"page":"Activity", "details":{"ActivityType":$scope.currentActivity,"value":$scope.measurement}});
+			click.$save();
+
+			var speed = 0;
+			if ($scope.currentActivity == "running" || $scope.currentActivity == "cycling")
+			{
+				speed = $scope.measurement / (Date.now() - startTime) * 1000 * 60 * 60;
+			}
+
+			var item = new UpdateAchievements({"activity":$scope.currentActivity,"speed":speed,"count":$scope.measurement});
+
+			item.$save($scope.popup);
+			$scope.active = false;
+
+			bgGeo.finish();
+		}
 	};
+
 	$scope.popup = function(achieved,headers) {
 		console.log(JSON.stringify(achieved));
-		for (i = 0;i < achieved.unlocked.length; i++){
+		for (i = 0; i < achieved.unlocked.length; i++){
 			var alertPopup = $ionicPopup.alert({
 				title: 'Achievement unlocked!',
 				template: achieved.unlocked[i]
 			});
 		}
-	};
-
-	$scope.newData = function(data)
-	{
-		calculateDifference = function(lat1, lon1, lat2, lon2)
-		{
-			var radlat1 = Math.PI * lat1/180
-			var radlat2 = Math.PI * lat2/180
-			var radlon1 = Math.PI * lon1/180
-			var radlon2 = Math.PI * lon2/180
-			var theta = lon1-lon2
-			var radtheta = Math.PI * theta/180
-			var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-			dist = Math.acos(dist)
-			dist = dist * 180/Math.PI
-			dist = dist * 60 * 1.1515
-			dist = dist * 1.609344
-			return dist
-		};
-
-		// Use $scope.$apply to update immediately
-		$scope.$apply(function() {
-			$scope.count = $scope.count + 1;
-			$scope.accuracy = data.coords.accuracy;
-			$scope.timestamp = data.timestamp;
-			$scope.difference = calculateDifference(data.coords.latitude, data.coords.longitude, $scope.latitude, $scope.longitude)
-			$scope.latitude = data.coords.latitude;
-			$scope.longitude = data.coords.longitude;
-		});
-	};
-
-	$scope.newError = function(error)
-	{
-		console.log(error.message);
-		// GPS off?
-		// Use $scope.$apply to update immediately
-		$scope.$apply(function() {
-			$scope.latitude = "?";
-			$scope.longitude = "?";
-			$scope.accuracy = "?";
-			$scope.timestamp = "?";
-		});
 	};
 });

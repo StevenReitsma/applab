@@ -10,12 +10,12 @@
 
 					<br />
 
-					<h3 align="center" class="title">{{measurement}} so far</h3>
+					<h3 align="center" class="title">{{measurement|number:1}} km so far</h3>
 
 					<br /><br />
 
 					<div style="text-align:center">
-						<button class="button button-positive" ng-click="stopActivity(0,0,0)">
+						<button class="button button-positive" ng-click="stopActivity()">
 						  Stop tracking
 						</button>
 					</div>
@@ -33,14 +33,17 @@
 					<h4 align="center" class="title">You are currently doing pushups</h4>
 					<br />
 					<h3>Tap with your nose!</h3>
-					<button class="round-button" ng-click = "increment()">{{value}}</button>					
+					<button class="round-button" ng-click = "increment()">{{measurement}}</button>					
 					<br />
 					<div ng-if="warning === true">One tap per second maximum</div>
 					<br />
 					<br />
-					<button class="button button-positive" ng-click="stopActivity('pushups')">
+					<button class="button button-positive" ng-click="stopActivity()">
 						Stop tracking and submit
 					</button>
+					<br />
+					<br />
+					<div ng-if="internetGone === true">Internet connection lost, please retry</div>
 					</div>
 				</div>
 			</div>
@@ -54,7 +57,7 @@
 				<div class="list">
 
 				  <label class="item item-radio">
-				    <input type="radio" name="activityType" ng-model="activityType" ng-value="'running'">
+				    <input type="radio" name="currentActivity" ng-model="currentActivity" ng-value="'running'">
 				    <div class="item-content">
 				      Running
 				    </div>
@@ -62,7 +65,7 @@
 				  </label>
 
 				  <label class="item item-radio">
-				    <input type="radio" name="activityType" ng-model="activityType" ng-value="'cycling'">
+				    <input type="radio" name="currentActivity" ng-model="currentActivity" ng-value="'cycling'">
 				    <div class="item-content">
 				      Cycling
 				    </div>
@@ -70,7 +73,7 @@
 				  </label>
 
 				  <label class="item item-radio">
-				    <input type="radio" name="activityType" ng-model="activityType" ng-value="'pushups'">
+				    <input type="radio" name="currentActivity" ng-model="currentActivity" ng-value="'pushups'">
 				    <div class="item-content">
 				      Pushups
 				    </div>
@@ -80,16 +83,10 @@
 				</div>
 				
 				<div style="text-align:center">
-					<button class="button button-positive" ng-click="startActivity(activityType)">
+					<button class="button button-positive" ng-click="startActivity(currentActivity)">
 					  Start tracking
 					</button>
 				</div>
-
-				{{count}}, {{latitude}}, {{longitude}}, {{accuracy}}, {{timestamp}}
-
-				<br />
-
-				{{difference}}
 
 				<br />
 
