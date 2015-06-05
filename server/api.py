@@ -365,21 +365,25 @@ class Dashboard(restful.Resource):
         response['cycling_level'] = 1
         response['pushups_level'] = 1
 
+        response['running'] = 0
+        response['cycling'] = 0
+        response['pushups'] = 0
+
         for c in counters:
             if c['name'] == 'running_total':
-                response['running_level'] = np.ceil(c['value'] / 10.)
+                response['running_level'] = np.ceil((c['value']+1) / 10.)
+                response['running'] = (c['value'] - 10 * (response['running_level']-1)) / 10. * 100.
             elif c['name'] == 'cycling_total':
-                response['cycling_level'] = np.ceil(c['value'] / 50.)
+                response['cycling_level'] = np.ceil((c['value']+1) / 50.)
+                response['cycling'] = (c['value'] - 50 * (response['cycling_level']-1)) / 50. * 100.
             elif c['name'] == 'pushups_total':
-                response['pushups_level'] = np.ceil(c['value'] / 100.)
+                response['pushups_level'] = np.ceil((c['value']+1) / 100.)
+                response['pushups'] = (c['value'] - 100 * (response['pushups_level']-1)) / 100. * 100.
 
         recommended = AchievementRecommender(uid)
 
         response['recent'] = recent_achievements
         response['recommended'] = recommended
-        response['running'] = 25
-        response['cycling'] = 46
-        response['pushups'] = 5
 
         username = db.coll('users').find_one({'_id': ObjectId(uid)})['name'].split()[0]
 

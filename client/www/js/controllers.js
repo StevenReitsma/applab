@@ -190,6 +190,8 @@ angular.module('starter.controllers', [])
 
 	$scope.round_to_5 = function(x)
 	{
+		if (x > 95 && x < 100)
+			return 95;
 		return Math.floor(5 * Math.round(x / 5))
 	};
 
