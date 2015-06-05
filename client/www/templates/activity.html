@@ -15,7 +15,7 @@
 					<br /><br />
 
 					<div style="text-align:center">
-						<button class="button button-positive">
+						<button class="button button-positive" ng-click="stopActivity(0,0,0)">
 						  Stop tracking
 						</button>
 					</div>
@@ -28,9 +28,16 @@
 					</p>
 				</div>
 				<div ng-if="currentActivity == 'pushups'">
-					ROBBERT'S ISSUE
-					===============
-					BIG BUTTON FOR PUSHUPS HERE
+					<div style="text-align:center">
+					<h3>Pushups, tap with nose!</h3>
+					<button class="round-button" ng-click = "increment()">{{value}}</button>					
+					<br />
+					<br />
+					<br />
+					<button class="button button-positive" ng-click="stopActivity('pushups')">
+						Submit result
+					</button>
+					</div>
 				</div>
 			</div>
 			<div ng-switch-default>

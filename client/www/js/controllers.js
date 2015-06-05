@@ -180,18 +180,22 @@ angular.module('starter.controllers', [])
 	$scope.dash = dash
 })
 
-.controller('ActivityCtrl', function($scope, Dashboard) {
+.controller('ActivityCtrl', function($scope, $ionicPopup, Dashboard, UpdateAchievements) {
 	$scope.active = false;
 	$scope.currentActivity = "cycling";
 	$scope.measurement = "12.8 km";
 	$scope.activityType = "running";
+	$scope.value = 0;
+	$scope.speed = 0;
 	$scope.count = 0;
+	var lastCall = 0;
 
 	$scope.startActivity = function(activityType)
 	{
 		// Optional: Send message to server that we're currently doing an activity
 
-
+		$scope.active = true;
+		$scope.currentActivity = activityType
 		if (activityType == "running" || activityType == "cycling")
 		{
 		    navigator.geolocation.getCurrentPosition(function(location) {
@@ -239,15 +243,37 @@ angular.module('starter.controllers', [])
 		}
 		else
 		{
-			// Start count tracking
-			// ROBBERT'S ISSUE
+			$scope.value = 0
 		}
 	};
-
-	$scope.stopActivity = function()
+	$scope.increment = function(){
+		
+		var now = Date.now();
+		if (lastCall + 1000 < now){
+			$scope.value = $scope.value + 1;
+			lastCall = now;
+		}
+		
+	};
+	
+	$scope.stopActivity = function(activity)
 	{
-		cordova.plugins.backgroundMode.disable();
-	}
+		//cordova.plugins.backgroundMode.disable();
+		console.log($scope.value)
+		var item = new UpdateAchievements({"activity":activity,"speed":$scope.speed,"count":$scope.value})
+		item.$save($scope.popup)
+		$scope.active = false
+		
+	};
+	$scope.popup = function(achieved,headers) {
+		console.log(JSON.stringify(achieved));
+		for (i = 0;i < achieved.unlocked.length; i++){
+			var alertPopup = $ionicPopup.alert({
+				title: 'Achievement unlocked!',
+				template: achieved.unlocked[i]
+			});
+		}
+	};
 
 	$scope.newData = function(data)
 	{
