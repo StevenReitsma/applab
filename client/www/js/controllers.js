@@ -83,7 +83,14 @@ angular.module('starter.controllers', [])
 	});
 })
 
-.controller('LoginCtrl', function($scope, $state, Login) {
+.controller('LoginCtrl', function($scope, $state, Login, Token) {
+	Token.get({}, function(response, headers) {
+		if (response.valid === true && window.localStorage['loggedin'])
+		{
+			$state.go('app.dashboard');
+		}
+	});
+
 	$scope.login = function(user) {
 		// Do login
 		var login = new Login(user);
@@ -253,6 +260,8 @@ angular.module('starter.controllers', [])
 		}
 		else
 		{
+			// Pushups
+
 			$scope.value = 0
 		}
 	};
@@ -262,6 +271,11 @@ angular.module('starter.controllers', [])
 		if (lastCall + 1000 < now){
 			$scope.value = $scope.value + 1;
 			lastCall = now;
+			$scope.warning = false;
+		}
+		else
+		{
+			$scope.warning = true;
 		}
 		
 	};

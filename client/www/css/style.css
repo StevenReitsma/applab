@@ -153,12 +153,12 @@ html, body, h1, h2, h3, h4, h5, h6, .item, .item-divider, .button {
     width:300px;
 	height:300px;
     line-height:50px;
-    border: 2px solid #f5f5f5;
+    border: 0px solid #e42012;
     border-radius: 50%;
-    color:#f5f5f5;
+    color:#ffffff;
     text-align:center;
     text-decoration:none;
-    background: #FF0000;
+    background: #e42012;
     box-shadow: 0 0 3px gray;
     font-size:30px;
     font-weight:bold;

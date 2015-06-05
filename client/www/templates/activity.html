@@ -29,13 +29,17 @@
 				</div>
 				<div ng-if="currentActivity == 'pushups'">
 					<div style="text-align:center">
-					<h3>Pushups, tap with nose!</h3>
+					<h1 align="center" class="title"><i class="icon ion-play balanced"></i> Tracking active</h1>
+					<h4 align="center" class="title">You are currently doing pushups</h4>
+					<br />
+					<h3>Tap with your nose!</h3>
 					<button class="round-button" ng-click = "increment()">{{value}}</button>					
 					<br />
+					<div ng-if="warning === true">One tap per second maximum</div>
 					<br />
 					<br />
 					<button class="button button-positive" ng-click="stopActivity('pushups')">
-						Submit result
+						Stop tracking and submit
 					</button>
 					</div>
 				</div>
