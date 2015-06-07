@@ -74,6 +74,20 @@ def require_appkey(view_function):
     return decorated_function
 
 
+def AddImageToAchiev(a):
+    name = a['requirements']['name']
+    if "speed" in name:
+        a['image'] = "time"
+    elif "cycling" in name:
+        a['image'] = "cycle"
+    elif "running" in name:
+        a['image'] = "run"
+    elif "pushups" in name:
+        a['image'] = "push"
+    else:
+        a['image'] = "lazy"
+    return a
+
 class AchievementsList(restful.Resource):
     def get(self):
         db = DB()
@@ -91,8 +105,8 @@ class AchievementsUnlocked(restful.Resource):
         unlocked = db.coll('progress').find({'uid': uid, 'unlocked': True})
         result = []
         for t in unlocked:
-            a = db.coll('achievements').find({'_id': t['aid']}, sort=[('name', db.ASCENDING)])
-            result.append(a[0])
+            a = db.coll('achievements').find_one({'_id': t['aid']}, sort=[('name', db.ASCENDING)])
+            result.append(AddImageToAchiev(a))
 
         return result
 
@@ -108,8 +122,8 @@ class AchievementsOtherUnlocked(restful.Resource):
         result = []
 
         for t in unlocked:
-            a = db.coll('achievements').find({'_id': t['aid']}, sort=[('name', db.ASCENDING)])
-            result.append(a[0])
+            a = db.coll('achievements').find_one({'_id': t['aid']}, sort=[('name', db.ASCENDING)])
+            result.append(AddImageToAchiev(a))
 
         return result
 
@@ -126,8 +140,8 @@ class AchievementsProgress(restful.Resource):
         result = []
 
         for t in unlocked:
-            a = db.coll('achievements').find({'_id': t['aid']}, sort=[('name', db.ASCENDING)])
-            result.append(a[0])
+            a = db.coll('achievements').find_one({'_id': t['aid']}, sort=[('name', db.ASCENDING)])
+            result.append(AddImageToAchiev(a))
 
         return result
 
@@ -146,7 +160,7 @@ class AchievementsOther(restful.Resource):
         for a in all_achievements:
             t = db.coll('progress').find({'aid': a['_id'], 'uid': uid, 'unlocked': True})
             if t.count() < 1:
-                result.append(a)
+                result.append(AddImageToAchiev(a))
 
         return result
 
@@ -516,12 +530,13 @@ class UpdateAchievements(restful.Resource):
                                 db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'days_left':p['days_left']-1,'updated_today':True}})
                         else:
                             db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'remaining':p['remaining']-count}})
-                elif p['name']!= "no_activity":
+                elif p['name']== activity + "_total":
                     a = db.coll('achievements').find_one({'_id':p['aid']})
-                    if a['requirements']['value'] < db.coll('counters').find_one({'uid':uid,'name':activity+"_total"})['value']:
+                    if a['requirements']['value'] <= db.coll('counters').find_one({'uid':uid,'name':activity+"_total"})['value']:
                         db.coll('progress').update({'uid':uid,'aid':p['aid']},{'$set':{'unlocked':True}})
                         unlocked.append(a['name'])
-                else:
+                        print activity + "_total"
+                elif p['name'] == "no_activity":
                     db.coll('progress').remove({'aid':p['aid'],'uid':p['uid']})
 
 

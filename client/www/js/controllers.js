@@ -349,10 +349,20 @@ angular.module('starter.controllers', [])
 
 	$scope.popup = function(achieved,headers) {
 		console.log(JSON.stringify(achieved));
+		var template = ""
 		for (i = 0; i < achieved.unlocked.length; i++){
+			if (i != achieved.unlocked.length-1){
+				un = achieved.unlocked[i].concat(", ")
+			}
+			else {
+				un = achieved.unlocked[i]
+			}
+			template = template.concat(un) 
+		}
+		if (template){
 			var alertPopup = $ionicPopup.alert({
-				title: 'Achievement unlocked!',
-				template: achieved.unlocked[i]
+				title: 'Achievement(s) unlocked!',
+				template: template
 			});
 		}
 	};

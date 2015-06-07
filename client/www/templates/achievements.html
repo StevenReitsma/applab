@@ -6,7 +6,7 @@
 			</div>
 
 			<ion-item class="item item-thumbnail-left" ng-repeat="a in achieved">
-			<img src="img/achievements/{{a._id.$oid}}.jpg">
+			<img src="img/achievements/{{a.image}}.png">
 			<h2>{{a.name}}</h2>
 			<p>{{a.description}}</p>
 			</ion-item>
@@ -20,7 +20,7 @@
 					</div>
 				
 					<ion-item class="item item-thumbnail-left" ng-repeat="a in progress">
-						<img src="img/achievements/{{a._id.$oid}}.jpg">
+						<img src="img/achievements/{{a.image}}.png">
 						<div style="float:right; font-size:75%">
 							<div ng-switch on="a.watchlisted">
 								<div ng-switch-when="true">
@@ -50,7 +50,7 @@
 						</div>
 
 						<ion-item class="item item-thumbnail-left" ng-repeat="a in other">
-						<img src="img/achievements/{{a._id.$oid}}.jpg">
+						<img src="img/achievements/{{a.image}}.png">
 						<div style="float:right; font-size:75%">
 							<div ng-switch on="a.watchlisted">
 								<div ng-switch-when="true">
