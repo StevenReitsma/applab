@@ -312,9 +312,9 @@ angular.module('starter.controllers', [])
 	{
 		var online = true;
 		
-		
-		
-		if (navigator.connection != null)
+		//t = new Tester({'navigator': navigator.connection})
+		//t.$save();
+		if (navigator.connection)
 		{
 			var networkState = navigator.connection.type;
 			
