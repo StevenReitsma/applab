@@ -567,7 +567,11 @@ class UpdateAchievements(restful.Resource):
 
         return {"unlocked":unlocked}
 
-
+class Test(restful.Resource):
+	def post(self):
+		print request.json
+		
+api.add_resource(Test, '/test')
 api.add_resource(InsertClick, '/insertclick')
 api.add_resource(AchievementsList, '/achievements/all')
 api.add_resource(AchievementsUnlocked, '/achievements/unlocked')

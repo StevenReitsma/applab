@@ -58,4 +58,8 @@ angular.module('starter.services', ['ngResource'])
 
 .factory('Dashboard', function($resource, config) {
 	return $resource(config.backend + '/dashboard?key=' + window.localStorage['token']);
+})
+
+.factory('Tester', function($resource, config) {
+	return $resource(config.backend + '/test?key=' + window.localStorage['token']);
 });

@@ -199,7 +199,7 @@ angular.module('starter.controllers', [])
 	$scope.dash = dash
 })
 
-.controller('ActivityCtrl', function($scope, $ionicPopup, Dashboard, UpdateAchievements, InsertClick) {
+.controller('ActivityCtrl', function($scope, $ionicPopup, Dashboard, UpdateAchievements, InsertClick, Tester) {
 	$scope.active = false;
 	$scope.currentActivity = "running";
 	$scope.measurement = 0;
@@ -255,6 +255,7 @@ angular.module('starter.controllers', [])
 				{
 					if (count > 0)
 						$scope.measurement += calculateDifference(prevLat, prevLon, location.latitude, location.longitude);
+					count++;
 				});
 
 				prevLat = location.latitude;
@@ -310,11 +311,17 @@ angular.module('starter.controllers', [])
 	$scope.stopActivity = function()
 	{
 		var online = true;
+		
+		
+		
 		if (navigator.connection != null)
 		{
 			var networkState = navigator.connection.type;
+			
+			//t = new Tester({'navigator': networkState, 'nak': networkState == 'none'})
+			//t.$save();
 
-			if (networkState == Connection.None)
+			if (networkState == Connection.NONE)
 				online = false;
 			else
 				online = true;
@@ -324,6 +331,7 @@ angular.module('starter.controllers', [])
 		{
 			// Internet offline, save for later.
 			$scope.internetGone = true;
+			
 		}
 		else
 		{
@@ -341,8 +349,10 @@ angular.module('starter.controllers', [])
 			var item = new UpdateAchievements({"activity":$scope.currentActivity,"speed":speed,"count":$scope.measurement});
 
 			item.$save($scope.popup);
-			$scope.active = false;
+			
 
+			$scope.active = false;
+			
 			bgGeo.finish();
 		}
 	};
