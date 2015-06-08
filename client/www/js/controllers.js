@@ -311,20 +311,20 @@ angular.module('starter.controllers', [])
 	$scope.stopActivity = function()
 	{
 		var online = true;
-		
-		//t = new Tester({'navigator': navigator.connection})
-		//t.$save();
 		if (navigator.connection)
 		{
 			var networkState = navigator.connection.type;
-			
-			//t = new Tester({'navigator': networkState, 'nak': networkState == 'none'})
-			//t.$save();
 
-			if (networkState == Connection.NONE)
+			console.log(networkState)
+			if (networkState == 'none'){
 				online = false;
-			else
+
+			}
+			else{
 				online = true;
+
+			}
+				
 		}
 
 		if (online === false)

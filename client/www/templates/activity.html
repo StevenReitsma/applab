@@ -24,8 +24,16 @@
 
 					<p align="center">
 					Tip: you can start and stop tracking as many times as you like! <br />
-					Everything counts towards your achievements.
+					Everything counts towards your achievements. 
 					</p>
+					<br />
+					<div ng-if="internetGone === true">
+					<p align="center">
+					Internet connection lost, please retry
+					</p>
+					</div>
+					
+					
 				</div>
 				<div ng-if="currentActivity == 'pushups'">
 					<div style="text-align:center">
@@ -41,9 +49,16 @@
 					<button class="button button-positive" ng-click="stopActivity()">
 						Stop tracking and submit
 					</button>
+					
 					<br />
+					<div ng-if="internetGone === true">
+					<p align="center">
+					Internet connection lost, please retry
+					</p>
+					</div>
+					
 					<br />
-					<div ng-if="internetGone === true">Internet connection lost, please retry</div>
+					
 					</div>
 				</div>
 			</div>
