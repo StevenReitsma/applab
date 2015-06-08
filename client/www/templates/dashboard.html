@@ -3,37 +3,38 @@
 		<h1 align="center" class="title">Hi, {{dash.name}}!</h1>
 		<br />
 		<h4 align="center" class="title">Progress towards next mastery level</h4>
-		<div style="display:table; padding-left: 27px; margin: 0 auto;">
+
+		<div style="display:table; margin: 0 auto;">
 			<table>
 				<tr>
-					<td>
+					<td align="center">
 						<div class="progress-radial progress-{{round_to_5(dash.running)}}">
-							<div class="overlay">{{dash.running}}%</div>
+							<div class="overlay">{{dash.running|number:0}}%</div>
 						</div>
 					</td>
-					<td>
+					<td align="center">
 						<div class="progress-radial progress-{{round_to_5(dash.cycling)}}">
-							<div class="overlay">{{dash.cycling}}%</div>
+							<div class="overlay">{{dash.cycling|number:0}}%</div>
 						</div>
 					</td>
-					<td>
+					<td align="center">
 						<div class="progress-radial progress-{{round_to_5(dash.pushups)}}">
 							<div class="overlay">{{dash.pushups}}%</div>
 						</div>
 					</td>
 				</tr>
 				<tr>
-					<td style="padding-right:29px; text-align:center">
+					<td style="padding-left: 5px; padding-right: 5px; text-align:center">
 						Running
 						<br />
 						Mastery Level {{dash.running_level}}
 					</td>
-					<td style="padding-right:29px; text-align:center">
+					<td style="padding-left: 5px; padding-right: 5px; text-align:center">
 						Cycling
 						<br />
 						Mastery Level {{dash.cycling_level}}
 					</td>
-					<td style="padding-right:29px; text-align:center">
+					<td style="padding-left: 5px; padding-right: 5px; text-align:center">
 						Push-ups
 						<br />
 						Mastery Level {{dash.pushups_level}}
