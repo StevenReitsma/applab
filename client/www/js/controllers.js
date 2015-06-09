@@ -184,10 +184,10 @@ angular.module('starter.controllers', [])
 	$scope.ranking = Ranking.query();
 })
 
-.controller('DashboardCtrl', function($scope, Dashboard, InsertClick) {
+.controller('DashboardCtrl', function($scope, $ionicPopup, Dashboard, InsertClick) {
 	var click = new InsertClick({"page":"Dashboard", "details":{}})
 	click.$save();
-
+	
 	$scope.round_to_5 = function(x)
 	{
 		if (x > 95 && x < 100)
@@ -195,11 +195,32 @@ angular.module('starter.controllers', [])
 		return Math.floor(5 * Math.round(x / 5))
 	};
 
+	var item = new Dashboard();
+	$scope.popup = function(achieved,headers){
+		var template = ""
+		for (i = 0; i < achieved.unlocked.length; i++){
+			if (i != achieved.unlocked.length-1){
+				un = achieved.unlocked[i].concat(", ")
+			}
+			else {
+				un = achieved.unlocked[i]
+			}
+			template = template.concat(un) 
+		}
+		if (template){
+			var alertPopup = $ionicPopup.alert({
+				title: 'Achievement(s) unlocked!',
+				template: template
+			});
+		}
+	};
+	item.$save($scope.popup)
 	var dash = Dashboard.get();
-	$scope.dash = dash
+	$scope.dash = dash;
+	
 })
 
-.controller('ActivityCtrl', function($scope, $ionicPopup, Dashboard, UpdateAchievements, InsertClick, Tester) {
+.controller('ActivityCtrl', function($scope, $ionicPopup, UpdateAchievements, InsertClick, Tester) {
 	$scope.active = false;
 	$scope.currentActivity = "running";
 	$scope.measurement = 0;

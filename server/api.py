@@ -409,6 +409,21 @@ class Dashboard(restful.Resource):
         response['name'] = username
 
         return response
+
+    @require_appkey
+    def post(self):
+        db = DB()
+        key = request.args.get('key')
+        uid = query.current_uid(key)
+        unlocked = []
+        for a in db.coll('progress').find({'uid':uid,'notified':False}):
+            if a['notified'] == False:
+                unlocked.append(db.coll('achievements').find_one({'_id':a['aid']})['name'])
+                print unlocked
+                db.coll('progress').update({'uid':uid,'aid':a['aid']},{"$set":{'notified':True}})
+
+        return {'unlocked': unlocked}
+
 class NonFriends(restful.Resource):
     @require_appkey
     def get(self):

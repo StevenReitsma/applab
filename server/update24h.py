@@ -16,12 +16,12 @@ def inactive():
                 if achiev != None:
                     if not achiev['unlocked']:
                         if achiev['days_left'] == 1:
-                            db.coll('progress').update({'_id':achiev['_id']},{"$set":{'unlocked':True}})
+                            db.coll('progress').update({'_id':achiev['_id']},{"$set":{'unlocked':True,'notified':False}})
                         else:
                             db.coll('progress').update({'_id':achiev['_id']},{"$set":{'days_left':achiev['days_left']-1}})
                 else:
                     if a['days_total'] == 1:
-                        db.coll('progress').insert({'aid':a['_id'],'uid':u['_id'],'unlocked':True})
+                        db.coll('progress').insert({'aid':a['_id'],'uid':u['_id'],'unlocked':True,'notified':False})
                     else:
                         db.coll('progress').insert({'aid':a['_id'],'uid':u['_id'],'unlocked':False,'days_left':a['days_total']-1,'name':"no_activity"})
 
