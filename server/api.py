@@ -389,11 +389,11 @@ class Dashboard(restful.Resource):
             if c['name'] == 'running_total':
                 response['running_level'] = np.ceil((c['value']+1) / 10.)
                 response['running'] = (c['value'] - 10 * (response['running_level']-1)) / 10. * 100.
-                response['totals']['running'] = np.around(c['value'],decimals=2)
+                response['totals']['running'] = c['value']
             elif c['name'] == 'cycling_total':
                 response['cycling_level'] = np.ceil((c['value']+1) / 50.)
                 response['cycling'] = (c['value'] - 50 * (response['cycling_level']-1)) / 50. * 100.
-                response['totals']['cycling'] = np.around(c['value'],decimals=2)
+                response['totals']['cycling'] = c['value']
             elif c['name'] == 'pushups_total':
                 response['pushups_level'] = np.ceil((c['value']+1) / 100.)
                 response['pushups'] = (c['value'] - 100 * (response['pushups_level']-1)) / 100. * 100.

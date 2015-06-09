@@ -59,23 +59,26 @@
 			<h4 align="center" class="title">Lifetime totals</h4>
 			<div class="row">
 				<div class = "col col-33 ">
-					<ion-item class="item item-avatar">
-						<img src="img/achievements/run.png">
-						{{dash.totals.running}}
+					<ion-item class="item" style="text-align:center">
+						<img src="img/achievements/run.png" height="48">
+						<br />
+						{{dash.totals.running|number:1}} km
 				
 					</ion-item>
 				</div>
 				<div class = "col col-33">
-					<ion-item class="item item-avatar">
-						<img src="img/achievements/cycle.png">
-						{{dash.totals.cycling}}
+					<ion-item class="item" style="text-align:center">
+						<img src="img/achievements/cycle.png" height="48">
+						<br />
+						{{dash.totals.cycling|number:1}} km
 				
 					</ion-item>
 				</div>
 				<div class = "col col-33">
-					<ion-item class="item item-avatar">
-						<img src="img/achievements/push.png">
-						{{dash.totals.pushups}}
+					<ion-item class="item" style="text-align:center">
+						<img src="img/achievements/push.png" height="48">
+						<br />
+						{{dash.totals.pushups|number:0}}
 				
 					</ion-item>
 				</div>
