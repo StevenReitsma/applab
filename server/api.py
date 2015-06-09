@@ -189,7 +189,7 @@ class UserProfile(restful.Resource):
             a = db.coll('achievements').find_one({'_id': t['aid']}, sort=[('name', db.ASCENDING)])
             points += a['score']
             count += 1
-            all_unlocked_achievements.append(a)
+            all_unlocked_achievements.append(AddImageToAchiev(a))
 
         # Add masteries to score
         counters = db.coll('counters').find({'uid': uid})
@@ -371,8 +371,8 @@ class Dashboard(restful.Resource):
 
         recent_achievements = []
         for r in recent:
-            a = db.coll('achievements').find({'_id': ObjectId(r['aid'])})
-            recent_achievements.append(a[0])
+            a = db.coll('achievements').find_one({'_id': ObjectId(r['aid'])})
+            recent_achievements.append(AddImageToAchiev(a))
 
         # Initial values
         response['running_level'] = 1
@@ -383,16 +383,21 @@ class Dashboard(restful.Resource):
         response['cycling'] = 0
         response['pushups'] = 0
 
+        response['totals'] = {'cycling':0,'running':0,'pushups':0}
+
         for c in counters:
             if c['name'] == 'running_total':
                 response['running_level'] = np.ceil((c['value']+1) / 10.)
                 response['running'] = (c['value'] - 10 * (response['running_level']-1)) / 10. * 100.
+                response['totals']['running'] = np.around(c['value'],decimals=2)
             elif c['name'] == 'cycling_total':
                 response['cycling_level'] = np.ceil((c['value']+1) / 50.)
                 response['cycling'] = (c['value'] - 50 * (response['cycling_level']-1)) / 50. * 100.
+                response['totals']['cycling'] = np.around(c['value'],decimals=2)
             elif c['name'] == 'pushups_total':
                 response['pushups_level'] = np.ceil((c['value']+1) / 100.)
                 response['pushups'] = (c['value'] - 100 * (response['pushups_level']-1)) / 100. * 100.
+                response['totals']['pushups'] = c['value']
 
         recommended = AchievementRecommender(uid)
 
@@ -477,12 +482,14 @@ def AchievementRecommender(uid):
     if len(progress) > 2:
         ids = np.random.choice(progress,3,replace=False)#Select 3 random progress achievements
         for id in ids:
-            achievements.append(db.coll('achievements').find_one({'_id':id['aid']})) #find the correct achievements
+            a = db.coll('achievements').find_one({'_id':id['aid']})
+            achievements.append(AddImageToAchiev(a)) #find the correct achievements
     else:
         progid = []
         if progress != []:
             for p in progress:
-                achievements.append(db.coll('achievements').find_one({'_id':p['aid']}))
+                a = db.coll('achievements').find_one({'_id':p['aid']})
+                achievements.append(AddImageToAchiev(a))
                 progid.append(p['aid'])
         completed = db.coll('progress').find({'unlocked':True})
         for c in completed:
@@ -491,14 +498,17 @@ def AchievementRecommender(uid):
         tempAchiev = []
         for a in achiev:
             if a['requirements']['value'] <= 5:
-                tempAchiev.append(a)
+                tempAchiev.append(AddImageToAchiev(a))
         if len(tempAchiev) > 3-len(achievements): #check whether there are enough achievements in tempachiev
             choice = np.random.choice(tempAchiev,(3-len(achievements)),replace=False)#random achievements that are easy to get
         elif len(achiev) > 3-len(achievements): #check whether there are enough remaining achievements overall
             choice = np.random.choice(achiev,(3-len(achievements)),replace=False)
         else:
-            choice = achiev
+            choice = []
+            for a in achiev:
+                choice.append[AddImageToAchiev(achiev)]
         achievements = np.append(achievements,choice)
+
     return achievements
 
 
