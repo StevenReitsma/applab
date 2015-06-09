@@ -19,24 +19,26 @@
     </ion-header-bar>
     <ion-content>
       <ion-list>
-        <ion-item nav-clear menu-close href="#/app/dashboard" class="item-icon-left">
-          <i class="icon ion-pie-graph"></i> Dashboard
-        </ion-item>
-        <ion-item nav-clear menu-close href="#/app/profile" class="item-icon-left">
-          <i class="icon ion-person"></i> Profile
-        </ion-item>
-        <ion-item nav-clear menu-close href="#/app/watchlist" class="item-icon-left">
-          <i class="icon ion-clipboard"></i> Watchlist
-        </ion-item>
-        <ion-item nav-clear menu-close href="#/app/achievements" class="item-icon-left">
-          <i class="icon ion-star"></i> Achievements
-        </ion-item>
-		    <ion-item nav-clear menu-close href="#/app/ranking" class="item-icon-left">
-          <i class="icon ion-trophy"></i> Ranking
-        </ion-item>
-		    <ion-item nav-clear menu-close href="#/app/friends" class="item-icon-left">
-          <i class="icon ion-person-stalker"></i> Friends
-        </ion-item>
+        <div ng-if="mode.mode != 'baseline'">
+          <ion-item nav-clear menu-close href="#/app/dashboard" class="item-icon-left">
+            <i class="icon ion-pie-graph"></i> Dashboard
+          </ion-item>
+          <ion-item nav-clear menu-close href="#/app/profile" class="item-icon-left">
+            <i class="icon ion-person"></i> Profile
+          </ion-item>
+          <ion-item nav-clear menu-close href="#/app/watchlist" class="item-icon-left">
+            <i class="icon ion-clipboard"></i> Watchlist
+          </ion-item>
+          <ion-item nav-clear menu-close href="#/app/achievements" class="item-icon-left">
+            <i class="icon ion-star"></i> Achievements
+          </ion-item>
+  		    <ion-item nav-clear menu-close href="#/app/ranking" class="item-icon-left">
+            <i class="icon ion-trophy"></i> Ranking
+          </ion-item>
+  		    <ion-item nav-clear menu-close href="#/app/friends" class="item-icon-left">
+            <i class="icon ion-person-stalker"></i> Friends
+          </ion-item>
+        </div>
         <ion-item nav-clear menu-close href="#/app/activity" class="item-icon-left">
           <i class="icon ion-flag"></i> Start an activity
         </ion-item>

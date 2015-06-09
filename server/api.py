@@ -595,6 +595,10 @@ class UpdateAchievements(restful.Resource):
 class Test(restful.Resource):
 	def post(self):
 		print request.json
+
+class Mode(restful.Resource):
+	def get(self):
+		return {'mode': 'normal'}
 		
 api.add_resource(Test, '/test')
 api.add_resource(InsertClick, '/insertclick')
@@ -614,6 +618,7 @@ api.add_resource(Friends, '/users/friends')
 api.add_resource(Friend, '/users/friends/friend')
 api.add_resource(NonFriends, '/nonfriends')
 api.add_resource(UpdateAchievements, '/updateachievements')
+api.add_resource(Mode, '/mode')
 
 
 if __name__ == "__main__":

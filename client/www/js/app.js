@@ -31,7 +31,8 @@ angular.module('starter', ['ionic', 'starter.config', 'starter.services', 'start
   .state('app', {
     url: "/app",
     abstract: true,
-    templateUrl: "templates/menu.html"
+    templateUrl: "templates/menu.html",
+    controller: "MenuCtrl"
   })
   .state('login', {
     url: "/login",

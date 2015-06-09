@@ -184,43 +184,48 @@ angular.module('starter.controllers', [])
 	$scope.ranking = Ranking.query();
 })
 
-.controller('DashboardCtrl', function($scope, $ionicPopup, Dashboard, InsertClick) {
+.controller('DashboardCtrl', function($scope, $ionicPopup, Dashboard, InsertClick, Mode) {
 	var click = new InsertClick({"page":"Dashboard", "details":{}})
 	click.$save();
-	
-	$scope.round_to_5 = function(x)
-	{
-		if (x > 95 && x < 100)
-			return 95;
-		return Math.floor(5 * Math.round(x / 5))
-	};
 
-	var item = new Dashboard();
-	$scope.popup = function(achieved,headers){
-		var template = ""
-		for (i = 0; i < achieved.unlocked.length; i++){
-			if (i != achieved.unlocked.length-1){
-				un = achieved.unlocked[i].concat(", ")
+	$scope.mode = Mode.get();
+
+	if ($scope.mode.mode != 'baseline')
+	{
+		$scope.round_to_5 = function(x)
+		{
+			if (x > 95 && x < 100)
+				return 95;
+			return Math.floor(5 * Math.round(x / 5))
+		};
+
+		var item = new Dashboard();
+		$scope.popup = function(achieved,headers){
+			var template = ""
+			for (i = 0; i < achieved.unlocked.length; i++){
+				if (i != achieved.unlocked.length-1){
+					un = achieved.unlocked[i].concat(", ")
+				}
+				else {
+					un = achieved.unlocked[i]
+				}
+				template = template.concat(un) 
 			}
-			else {
-				un = achieved.unlocked[i]
+			if (template){
+				var alertPopup = $ionicPopup.alert({
+					title: 'Achievement(s) unlocked!',
+					template: template
+				});
 			}
-			template = template.concat(un) 
-		}
-		if (template){
-			var alertPopup = $ionicPopup.alert({
-				title: 'Achievement(s) unlocked!',
-				template: template
-			});
-		}
-	};
-	item.$save($scope.popup)
-	var dash = Dashboard.get();
-	$scope.dash = dash;
+		};
+		item.$save($scope.popup)
+		var dash = Dashboard.get();
+		$scope.dash = dash;
+	}
 	
 })
 
-.controller('ActivityCtrl', function($scope, $ionicPopup, UpdateAchievements, InsertClick, Tester) {
+.controller('ActivityCtrl', function($scope, $ionicPopup, UpdateAchievements, InsertClick, Tester, Mode) {
 	$scope.active = false;
 	$scope.currentActivity = "running";
 	$scope.measurement = 0;
@@ -379,22 +384,33 @@ angular.module('starter.controllers', [])
 	};
 
 	$scope.popup = function(achieved,headers) {
-		console.log(JSON.stringify(achieved));
-		var template = ""
-		for (i = 0; i < achieved.unlocked.length; i++){
-			if (i != achieved.unlocked.length-1){
-				un = achieved.unlocked[i].concat(", ")
+		// Disable popups for baseline mode
+		Mode.get(function (result) {
+			if (result.mode != 'baseline')
+			{
+				var template = ""
+				for (i = 0; i < achieved.unlocked.length; i++){
+					if (i != achieved.unlocked.length-1){
+						un = achieved.unlocked[i].concat(", ")
+					}
+					else {
+						un = achieved.unlocked[i]
+					}
+					template = template.concat(un) 
+				}
+				if (template){
+					var alertPopup = $ionicPopup.alert({
+						title: 'Achievement(s) unlocked!',
+						template: template
+					});
+				}
 			}
-			else {
-				un = achieved.unlocked[i]
-			}
-			template = template.concat(un) 
-		}
-		if (template){
-			var alertPopup = $ionicPopup.alert({
-				title: 'Achievement(s) unlocked!',
-				template: template
-			});
-		}
+		})
+
+
 	};
+})
+
+.controller('MenuCtrl', function($scope, Mode) {
+	$scope.mode = Mode.get();
 });

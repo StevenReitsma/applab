@@ -2,92 +2,105 @@
 	<ion-content class="padding">
 		<h1 align="center" class="title">Hi, {{dash.name}}!</h1>
 		<br />
-		<h4 align="center" class="title">Progress towards next mastery level</h4>
 
-		<div style="display:table; margin: 0 auto;">
-			<table>
-				<tr>
-					<td align="center">
-						<div class="progress-radial progress-{{round_to_5(dash.running)}}">
-							<div class="overlay">{{dash.running|number:0}}%</div>
-						</div>
-					</td>
-					<td align="center">
-						<div class="progress-radial progress-{{round_to_5(dash.cycling)}}">
-							<div class="overlay">{{dash.cycling|number:0}}%</div>
-						</div>
-					</td>
-					<td align="center">
-						<div class="progress-radial progress-{{round_to_5(dash.pushups)}}">
-							<div class="overlay">{{dash.pushups}}%</div>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td style="padding-left: 5px; padding-right: 5px; text-align:center">
-						Running
-						<br />
-						Mastery Level {{dash.running_level}}
-					</td>
-					<td style="padding-left: 5px; padding-right: 5px; text-align:center">
-						Cycling
-						<br />
-						Mastery Level {{dash.cycling_level}}
-					</td>
-					<td style="padding-left: 5px; padding-right: 5px; text-align:center">
-						Push-ups
-						<br />
-						Mastery Level {{dash.pushups_level}}
-					</td>
-				</tr>
-			</table>
-		</div>
-		
-		<br /><br />
-		<h4 align="center" class="title">Lifetime totals</h4>
-		<div class="row">
-			<div class = "col col-33 ">
-				<ion-item class="item item-avatar">
-					<img src="img/achievements/run.png">
-					{{dash.totals.running}}
-			
-				</ion-item>
-			</div>
-			<div class = "col col-33">
-				<ion-item class="item item-avatar">
-					<img src="img/achievements/cycle.png">
-					{{dash.totals.cycling}}
-			
-				</ion-item>
-			</div>
-			<div class = "col col-33">
-				<ion-item class="item item-avatar">
-					<img src="img/achievements/push.png">
-					{{dash.totals.pushups}}
-			
-				</ion-item>
-			</div>
-		</div>
-		<br /><br />
-		<h4 align="center" class="title">Recommended achievements</h4>
-		<div class="list">
-			<ion-item class="item item-thumbnail-left" ng-repeat="a in dash.recommended">
-				<img src="img/achievements/{{a.image}}.png">
-				<h2>{{a.name}}</h2>
-				<p>{{a.description}}</p>
-			</ion-item>
-		</div>
+		<div ng-if="mode.mode == 'baseline'">
+			<h4>Notice</h4>
+			The app is currently in <b>baseline testing mode</b>. You can only track your activities using the menu on the left. Next week you will be able to use the full version of the app which includes achievements, rankings and more!
 
-
-		<div ng-if="dash.recent.length > 0">
 			<br /><br />
-			<h4 align="center" class="title">Recently achieved</h4>
+
+			It is <b>not</b> a problem if you don't do any activities! Please do make sure that you turn on the app if you <b>do</b> perform activities.
+		</div>
+
+		<div ng-if="mode.mode != 'baseline'">
+
+			<h4 align="center" class="title">Progress towards next mastery level</h4>
+
+			<div style="display:table; margin: 0 auto;">
+				<table>
+					<tr>
+						<td align="center">
+							<div class="progress-radial progress-{{round_to_5(dash.running)}}">
+								<div class="overlay">{{dash.running|number:0}}%</div>
+							</div>
+						</td>
+						<td align="center">
+							<div class="progress-radial progress-{{round_to_5(dash.cycling)}}">
+								<div class="overlay">{{dash.cycling|number:0}}%</div>
+							</div>
+						</td>
+						<td align="center">
+							<div class="progress-radial progress-{{round_to_5(dash.pushups)}}">
+								<div class="overlay">{{dash.pushups}}%</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td style="padding-left: 5px; padding-right: 5px; text-align:center">
+							Running
+							<br />
+							Mastery Level {{dash.running_level}}
+						</td>
+						<td style="padding-left: 5px; padding-right: 5px; text-align:center">
+							Cycling
+							<br />
+							Mastery Level {{dash.cycling_level}}
+						</td>
+						<td style="padding-left: 5px; padding-right: 5px; text-align:center">
+							Push-ups
+							<br />
+							Mastery Level {{dash.pushups_level}}
+						</td>
+					</tr>
+				</table>
+			</div>
+			
+			<br /><br />
+			<h4 align="center" class="title">Lifetime totals</h4>
+			<div class="row">
+				<div class = "col col-33 ">
+					<ion-item class="item item-avatar">
+						<img src="img/achievements/run.png">
+						{{dash.totals.running}}
+				
+					</ion-item>
+				</div>
+				<div class = "col col-33">
+					<ion-item class="item item-avatar">
+						<img src="img/achievements/cycle.png">
+						{{dash.totals.cycling}}
+				
+					</ion-item>
+				</div>
+				<div class = "col col-33">
+					<ion-item class="item item-avatar">
+						<img src="img/achievements/push.png">
+						{{dash.totals.pushups}}
+				
+					</ion-item>
+				</div>
+			</div>
+			<br /><br />
+			<h4 align="center" class="title">Recommended achievements</h4>
 			<div class="list">
-				<ion-item class="item item-thumbnail-left" ng-repeat="a in dash.recent">
+				<ion-item class="item item-thumbnail-left" ng-repeat="a in dash.recommended">
 					<img src="img/achievements/{{a.image}}.png">
 					<h2>{{a.name}}</h2>
 					<p>{{a.description}}</p>
 				</ion-item>
+			</div>
+
+
+			<div ng-if="dash.recent.length > 0">
+				<br /><br />
+				<h4 align="center" class="title">Recently achieved</h4>
+				<div class="list">
+					<ion-item class="item item-thumbnail-left" ng-repeat="a in dash.recent">
+						<img src="img/achievements/{{a.image}}.png">
+						<h2>{{a.name}}</h2>
+						<p>{{a.description}}</p>
+					</ion-item>
+				</div>
 			</div>
 		</div>
 	</ion-content>

@@ -62,4 +62,8 @@ angular.module('starter.services', ['ngResource'])
 
 .factory('Tester', function($resource, config) {
 	return $resource(config.backend + '/test?key=' + window.localStorage['token']);
+})
+
+.factory('Mode', function($resource, config) {
+	return $resource(config.backend + '/mode?key=' + window.localStorage['token']);
 });
