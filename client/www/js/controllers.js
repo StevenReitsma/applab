@@ -262,6 +262,9 @@ angular.module('starter.controllers', [])
 		    	// Add distance
 				calculateDifference = function(lat1, lon1, lat2, lon2)
 				{
+					if (lat1 == NaN || lon1 == NaN || lat2 == NaN || lon2 == NaN){
+						return 0
+					}
 					var radlat1 = Math.PI * lat1/180
 					var radlat2 = Math.PI * lat2/180
 					var radlon1 = Math.PI * lon1/180
@@ -378,8 +381,8 @@ angular.module('starter.controllers', [])
 			
 
 			$scope.active = false;
-			
-			bgGeo.finish();
+			$scope.measurement = 0;
+			bgGeo.stop();
 		}
 	};
 

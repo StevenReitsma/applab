@@ -386,6 +386,9 @@ class Dashboard(restful.Resource):
         response['totals'] = {'cycling':0,'running':0,'pushups':0}
 
         for c in counters:
+            if c['value'] is None:
+                c['value'] = 0
+                db.coll('counters').update({'name':c['name'],'uid':uid},{'$set':{'value':0}})
             if c['name'] == 'running_total':
                 response['running_level'] = np.ceil((c['value']+1) / 10.)
                 response['running'] = (c['value'] - 10 * (response['running_level']-1)) / 10. * 100.
@@ -398,6 +401,8 @@ class Dashboard(restful.Resource):
                 response['pushups_level'] = np.ceil((c['value']+1) / 100.)
                 response['pushups'] = (c['value'] - 100 * (response['pushups_level']-1)) / 100. * 100.
                 response['totals']['pushups'] = c['value']
+
+
 
         recommended = AchievementRecommender(uid)
 
@@ -537,6 +542,8 @@ class UpdateAchievements(restful.Resource):
         activity = request.json['activity']
         speed = request.json['speed']
         count = request.json['count']
+        if count is None:
+            return{'unlocked':[]}
         updateCounters(count,uid,activity)
         Progress = db.coll('progress').find({'uid':uid})
         inProgress = []
@@ -598,7 +605,7 @@ class Test(restful.Resource):
 
 class Mode(restful.Resource):
 	def get(self):
-		return {'mode': 'baseline'}
+		return {'mode': 'normal'}
 		
 api.add_resource(Test, '/test')
 api.add_resource(InsertClick, '/insertclick')
