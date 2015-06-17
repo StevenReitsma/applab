@@ -257,8 +257,8 @@ class Watchlist(restful.Resource):
         result = []
 
         for a in wl:
-            am = db.coll('achievements').find({'_id': ObjectId(a['aid'])})
-            result.append({'name': am[0]['name'], 'description': am[0]['description'], 'aid': a['aid']})
+            am = AddImageToAchiev(db.coll('achievements').find_one({'_id': ObjectId(a['aid'])}))
+            result.append({'name': am['name'], 'description': am['description'], 'aid': a['aid'],'image':am['image']})
 
         return result
 
@@ -598,7 +598,7 @@ class Test(restful.Resource):
 
 class Mode(restful.Resource):
 	def get(self):
-		return {'mode': 'normal'}
+		return {'mode': 'baseline'}
 		
 api.add_resource(Test, '/test')
 api.add_resource(InsertClick, '/insertclick')
